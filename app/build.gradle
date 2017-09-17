@@ -5,14 +5,13 @@ android {
     buildToolsVersion "26.0.1"
     defaultConfig {
         applicationId "pe.edu.ucsp.vraze"
-        minSdkVersion 22
+        minSdkVersion 24
         targetSdkVersion 25
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
-            cmake {
-                cppFlags "-std=c++11"
+            ndkBuild {
             }
         }
     }
@@ -23,8 +22,13 @@ android {
         }
     }
     externalNativeBuild {
-        cmake {
-            path "CMakeLists.txt"
+        ndkBuild {
+            path "jni/Android.mk"
+        }
+    }
+    productFlavors {
+        arm7 {
+            ndk.abiFilter 'armeabi-v7a'
         }
     }
 }
@@ -35,5 +39,11 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
+    compile 'com.google.vr:sdk-audio:1.80.0'
+    compile 'com.google.vr:sdk-base:1.80.0'
     testCompile 'junit:junit:4.12'
 }
+
+preBuild.dependsOn extractAudioSo
+preBuild.dependsOn extractGvrSo
+

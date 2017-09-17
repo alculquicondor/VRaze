@@ -16,29 +16,25 @@ allprojects {
     repositories {
         jcenter()
     }
+    task extractAudioSo(type: Copy) {
+        from zipTree("${project.rootDir}/dependencies/gvr-android-sdk/libraries/sdk-audio-1.80.0.aar")
+        into "${project.rootDir}/libraries/"
+        include "jni/**/libgvr_audio.so"
+    }
+
+    task extractGvrSo(type: Copy) {
+        from zipTree("${project.rootDir}/dependencies/gvr-android-sdk/libraries/sdk-base-1.80.0.aar")
+        into "${project.rootDir}/libraries/"
+        include "jni/**/libgvr.so"
+    }
+
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task extractAudioSo(type: Copy) {
-    from zipTree("${project.rootDir}/libraries/sdk-audio-1.80.0.aar")
-    into "${project.rootDir}/libraries/"
-    include "jni/**/libgvr_audio.so"
-}
-
-task extractGvrSo(type: Copy) {
-    from zipTree("${project.rootDir}/libraries/sdk-base-1.80.0.aar")
-    into "${project.rootDir}/libraries/"
-    include "jni/**/libgvr.so"
-}
-
-task extractNdk { }
-extractNdk.dependsOn extractAudioSo
-extractNdk.dependsOn extractGvrSo
-
-task deleteNdk(type: Delete) {
+task deleteGvr(type: Delete) {
     delete "${project.rootDir}/libraries/jni"
 }
-clean.dependsOn(deleteNdk)
+clean.dependsOn(deleteGvr)

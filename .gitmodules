@@ -1,0 +1,27 @@
+[submodule "dependencies/gvr-android-sdk"]
+	path = dependencies/gvr-android-sdk
+	url = https://github.com/googlevr/gvr-android-sdk
+[submodule "dependencies/fplbase"]
+	path = dependencies/fplbase
+	url = https://github.com/google/fplbase
+[submodule "dependencies/fplutil"]
+	path = dependencies/fplutil
+	url = https://github.com/google/fplutil
+[submodule "dependencies/flatbuffers"]
+	path = dependencies/flatbuffers
+	url = https://github.com/google/flatbuffers
+[submodule "dependencies/mathfu"]
+	path = dependencies/mathfu
+	url = https://github.com/google/mathfu
+[submodule "dependencies/sdl"]
+	path = dependencies/sdl
+	url = https://github.com/google/fplbase
+[submodule "dependencies/vectorial"]
+	path = dependencies/vectorial
+	url = https://github.com/scoopr/vectorial
+[submodule "dependencies/stb"]
+	path = dependencies/stb
+	url = https://github.com/nothings/stb.git
+[submodule "dependencies/webp"]
+	path = dependencies/webp
+	url = https://chromium.googlesource.com/webm/libwebp

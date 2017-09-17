@@ -1,0 +1,62 @@
+/*
+ * Copyright 2017 Aldo Culquicondor
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#ifndef VRAZE_VRAZE_APP_H_
+#define VRAZE_VRAZE_APP_H_
+
+#include <android/asset_manager.h>
+#include <fplbase/renderer.h>
+#include <jni.h>
+#include <vr/gvr/capi/include/gvr.h>
+#include <vr/gvr/capi/include/gvr_controller.h>
+
+
+class VRazeApp {
+ public:
+  VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr);
+  ~VRazeApp();
+  void OnResume();
+  void OnPause();
+  void OnSurfaceCreated();
+  void OnSurfaceChanged(int width, int height);
+  void OnDrawFrame();
+
+ private:
+  void PrepareFramebuffer();
+  void DrawEye(gvr::Eye which_eye, const gvr::Mat4f& eye_view_matrix,
+               const gvr::BufferViewport& params);
+  void SetUpViewPortAndScissor(const gvr::Sizei& framebuf_size,
+                               const gvr::BufferViewport& params);
+
+  AAssetManager* asset_mgr_;
+
+  gvr_context* gvr_context_;
+  std::unique_ptr<gvr::GvrApi> gvr_api_;
+  bool gvr_api_initialized_;
+  std::unique_ptr<gvr::ControllerApi> controller_api_;
+  std::unique_ptr<gvr::SwapChain> swap_chain_;
+  gvr::BufferViewportList viewport_list_;
+  gvr::BufferViewport scene_viewport_;
+  gvr::Sizei framebuf_size_;
+  gvr::ControllerState controller_state_;
+
+  std::unique_ptr<fplbase::Renderer> renderer_;
+
+  VRazeApp(const VRazeApp& other) = delete;
+  VRazeApp& operator=(const VRazeApp& other) = delete;
+};
+
+#endif //VRAZE_VRAZE_APP_H_

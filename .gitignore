@@ -52,3 +52,5 @@ freeline.py
 freeline/
 freeline_project_description.json
 
+# Shared libraries
+*.so
