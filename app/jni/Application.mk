@@ -13,8 +13,7 @@
 # limitations under the License.
 
 APP_STL := gnustl_shared
-APP_ABI := armeabi-v7a
+APP_ABI := armeabi-v7a x86
 APP_CPPFLAGS += -std=c++11 -Wno-unused-function
 APP_PLATFORM := android-24
 APP_MODULES := vraze_jni
-NDK_TOOLCHAIN_VERSION := clang

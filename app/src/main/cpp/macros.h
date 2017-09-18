@@ -14,29 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_UTILS_H_
-#define VRAZE_UTILS_H_
+#ifndef VRAZE_MACROS_H_
+#define VRAZE_MACROS_H_
 
-#include <android/log.h>
+#include <memory>
 
-#ifdef __ANDROID__
-#define LOG_TAG "VRazeCPP"
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO, LOG_TAG, __VA_ARGS__)
-#define LOGW(...) \
-      __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR, LOG_TAG, __VA_ARGS__)
-#else
-#define LOGD(...)
-  #define LOGW(...)
-  #define LOGE(...)
-#endif  // #ifdef __ANDROID__
 
-#define CHECK(condition) if (!(condition)) { \
-        LOGE("*** CHECK FAILED at %s:%d: %s", __FILE__, __LINE__, #condition); \
-        abort(); }
-#define CHECK_EQ(a, b) CHECK((a) == (b))
-#define CHECK_NE(a, b) CHECK((a) != (b))
+// Put this in the declarations for a class to be uncopyable.
+#define DISALLOW_COPY(TypeName) \
+  TypeName(const TypeName&) = delete
+
+// Put this in the declarations for a class to be unassignable.
+#define DISALLOW_ASSIGN(TypeName) TypeName& operator=(const TypeName&) = delete
+
+// Put this in the declarations for a class to be uncopyable and unassignable.
+#define DISALLOW_COPY_AND_ASSIGN(TypeName) \
+  DISALLOW_COPY(TypeName);                 \
+  DISALLOW_ASSIGN(TypeName)
+
 
 #if __cplusplus <= 201402L  // Check C++14
 
@@ -51,4 +46,5 @@ std::unique_ptr<T> make_unique(Args&&... args) {
 
 #endif
 
-#endif //VRAZE_UTILS_H_
+
+#endif //VRAZE_MACROS_H_

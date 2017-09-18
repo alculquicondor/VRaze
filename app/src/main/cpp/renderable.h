@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_MATHFU_GVR_H_
-#define VRAZE_MATHFU_GVR_H_
+#ifndef VRAZE_RENDERABLE_H_
+#define VRAZE_RENDERABLE_H_
 
-#include <mathfu/vector.h>
-#include <mathfu/matrix.h>
-#include <vr/gvr/capi/include/gvr_types.h>
-
-
-inline mathfu::vec2i GvrToMathfu(const gvr::Sizei &size) {
-  return {size.width, size.height};
-}
+#include <fplbase/asset_manager.h>
+#include <fplbase/renderer.h>
 
 
-inline mathfu::mat4 GvrToMathfu(const gvr::Mat4f &mat) {
-  mathfu::mat4 result;
-  for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 4; ++j)
-      result(i, j) = mat.m[i][j];
-  return result;
-}
+class Renderable {
+ public:
+  virtual void SetUp(fplbase::AssetManager* asset_manager) = 0;
+  virtual void Render(
+      fplbase::Renderer* renderer, const mathfu::mat4& model_view_projection_matrix) = 0;
+};
 
-#endif //VRAZE_MATHFU_GVR_H_
+#endif //VRAZE_RENDERABLE_H_

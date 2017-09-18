@@ -23,6 +23,7 @@ include $(DEPENDENCIES_FLATBUFFERS_DIR)/android/jni/include.mk
 
 include $(CLEAR_VARS)
 LOCAL_MODULE := vraze_jni
+LOCAL_CPPFLAGS := -DFPLBASE_BACKEND_STDLIB
 LOCAL_C_INCLUDES := \
   $(DEPENDENCIES_FPLUTIL_DIR)/libfplutil/include \
   $(DEPENDENCIES_FPLBASE_DIR)/include \
@@ -31,17 +32,24 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/src
 
 LOCAL_SRC_FILES := \
+  src/main/cpp/ground.cc \
+  src/main/cpp/scene.cc \
   src/main/cpp/vraze_jni.cc \
   src/main/cpp/vraze_app.cc
-
-FPLBASE_JNI_ONLOAD_FUNCTIONS := SDL_JNI_OnLoad GPG_JNI_OnLoad
 
 LOCAL_STATIC_LIBRARIES := \
   libfplbase_stdlib
 
-LOCAL_LDLIBS := -lGLESv2 -llog -lz -lEGL -landroid \
-  -L$(LOCAL_PATH)/../libraries/jni/armeabi-v7a \
-  -lgvr
+LOCAL_SHARED_LIBRARIES :=
+
+ifeq ($(TARGET_ARCH_ABI),armeabi-v7a)
+LOCAL_LDLIBS := -L$(LOCAL_PATH)/../libraries/jni/armeabi-v7a
+endif
+ifeq ($(TARGET_ARCH_ABI),x86)
+LOCAL_LDLIBS := -L$(LOCAL_PATH)/../libraries/jni/x86
+endif
+
+LOCAL_LDLIBS += -ldl -lgvr
 
 include $(BUILD_SHARED_LIBRARY)
 

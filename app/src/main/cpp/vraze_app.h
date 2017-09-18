@@ -23,10 +23,12 @@
 #include <vr/gvr/capi/include/gvr.h>
 #include <vr/gvr/capi/include/gvr_controller.h>
 
+#include "scene.h"
+
 
 class VRazeApp {
  public:
-  VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr);
+  explicit VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr);
   ~VRazeApp();
   void OnResume();
   void OnPause();
@@ -36,12 +38,12 @@ class VRazeApp {
 
  private:
   void PrepareFramebuffer();
-  void DrawEye(gvr::Eye which_eye, const gvr::Mat4f& eye_view_matrix,
-               const gvr::BufferViewport& params);
+  void DrawEye(gvr::Eye which_eye, const mathfu::mat4 &eye_view_matrix,
+               const gvr::BufferViewport &viewport);
   void SetUpViewPortAndScissor(const gvr::Sizei& framebuf_size,
                                const gvr::BufferViewport& params);
 
-  AAssetManager* asset_mgr_;
+  AAssetManager* a_asset_mgr_;
 
   gvr_context* gvr_context_;
   std::unique_ptr<gvr::GvrApi> gvr_api_;
@@ -54,9 +56,11 @@ class VRazeApp {
   gvr::ControllerState controller_state_;
 
   std::unique_ptr<fplbase::Renderer> renderer_;
+  std::unique_ptr<fplbase::AssetManager> fpl_asset_manager_;
 
-  VRazeApp(const VRazeApp& other) = delete;
-  VRazeApp& operator=(const VRazeApp& other) = delete;
+  std::unique_ptr<Scene> scene_;
+
+  DISALLOW_COPY_AND_ASSIGN(VRazeApp);
 };
 
 #endif //VRAZE_VRAZE_APP_H_

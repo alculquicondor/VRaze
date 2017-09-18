@@ -14,25 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_MATHFU_GVR_H_
-#define VRAZE_MATHFU_GVR_H_
+#ifndef VRAZE_GROUND_H_
+#define VRAZE_GROUND_H_
 
-#include <mathfu/vector.h>
-#include <mathfu/matrix.h>
-#include <vr/gvr/capi/include/gvr_types.h>
+#include <fplbase/mesh.h>
 
-
-inline mathfu::vec2i GvrToMathfu(const gvr::Sizei &size) {
-  return {size.width, size.height};
-}
+#include "renderable.h"
 
 
-inline mathfu::mat4 GvrToMathfu(const gvr::Mat4f &mat) {
-  mathfu::mat4 result;
-  for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 4; ++j)
-      result(i, j) = mat.m[i][j];
-  return result;
-}
+class Ground : public Renderable {
+ public:
+  explicit Ground();
+  void SetUp(fplbase::AssetManager* asset_manager);
+  void Render(fplbase::Renderer* renderer, const mathfu::mat4& model_view_projection_matrix);
 
-#endif //VRAZE_MATHFU_GVR_H_
+ private:
+  fplbase::Mesh mesh_;
+  fplbase::Material material_;
+  fplbase::Shader* shader_;
+};
+
+#endif //VRAZE_GROUND_H_

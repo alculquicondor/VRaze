@@ -13,26 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef VRAZE_MATHFU_GVR_H_
-#define VRAZE_MATHFU_GVR_H_
-
-#include <mathfu/vector.h>
-#include <mathfu/matrix.h>
-#include <vr/gvr/capi/include/gvr_types.h>
+ 
+#include "scene.h"
 
 
-inline mathfu::vec2i GvrToMathfu(const gvr::Sizei &size) {
-  return {size.width, size.height};
+namespace {
+const mathfu::mat4 kGroundModelMatrix =
+    mathfu::mat4::FromTranslationVector({0.0f, -2.0f, 0.0f});
+}  // namespace
+
+
+Scene::Scene() {
 }
 
 
-inline mathfu::mat4 GvrToMathfu(const gvr::Mat4f &mat) {
-  mathfu::mat4 result;
-  for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 4; ++j)
-      result(i, j) = mat.m[i][j];
-  return result;
+void Scene::SetUp(fplbase::AssetManager *asset_manager) {
+  ground_.SetUp(asset_manager);
 }
 
-#endif //VRAZE_MATHFU_GVR_H_
+
+void Scene::Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix) {
+  ground_.Render(renderer, view_projection_matrix * kGroundModelMatrix);
+}

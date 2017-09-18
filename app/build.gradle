@@ -7,6 +7,9 @@ android {
         applicationId "pe.edu.ucsp.vraze"
         minSdkVersion 24
         targetSdkVersion 25
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -20,15 +23,20 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            debuggable true
+            initWith debug
+            jniDebuggable true
+            externalNativeBuild {
+                ndkBuild {
+                    cFlags "-DDEBUG=1"
+                }
+            }
+        }
     }
     externalNativeBuild {
         ndkBuild {
             path "jni/Android.mk"
-        }
-    }
-    productFlavors {
-        arm7 {
-            ndk.abiFilter 'armeabi-v7a'
         }
     }
 }

@@ -14,25 +14,25 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_MATHFU_GVR_H_
-#define VRAZE_MATHFU_GVR_H_
+#ifndef VRAZE_SCENE_H_
+#define VRAZE_SCENE_H_
 
-#include <mathfu/vector.h>
-#include <mathfu/matrix.h>
-#include <vr/gvr/capi/include/gvr_types.h>
+#include <fplbase/asset_manager.h>
+#include <fplbase/renderer.h>
 
+#include "macros.h"
+#include "ground.h"
 
-inline mathfu::vec2i GvrToMathfu(const gvr::Sizei &size) {
-  return {size.width, size.height};
-}
+class Scene {
+ public:
+  explicit Scene();
+  void SetUp(fplbase::AssetManager *asset_manager);
+  void Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix);
 
+ private:
+  Ground ground_;
 
-inline mathfu::mat4 GvrToMathfu(const gvr::Mat4f &mat) {
-  mathfu::mat4 result;
-  for (int i = 0; i < 4; ++i)
-    for (int j = 0; j < 4; ++j)
-      result(i, j) = mat.m[i][j];
-  return result;
-}
+  DISALLOW_COPY_AND_ASSIGN(Scene);
+};
 
-#endif //VRAZE_MATHFU_GVR_H_
+#endif //VRAZE_SCENE_H_
