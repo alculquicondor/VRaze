@@ -49,7 +49,7 @@ ifeq ($(TARGET_ARCH_ABI),x86)
 LOCAL_LDLIBS := -L$(LOCAL_PATH)/../libraries/jni/x86
 endif
 
-LOCAL_LDLIBS += -ldl -lgvr
+LOCAL_LDLIBS += -ldl -lgvr -lGLESv3
 
 include $(BUILD_SHARED_LIBRARY)
 

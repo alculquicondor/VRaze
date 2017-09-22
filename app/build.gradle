@@ -24,9 +24,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            debuggable true
-            initWith debug
-            jniDebuggable true
             externalNativeBuild {
                 ndkBuild {
                     cFlags "-DDEBUG=1"
