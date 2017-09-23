@@ -13,27 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
-
-#include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
-
-#include "macros.h"
-#include "ground.h"
+ 
 #include "steering.h"
 
-class Scene {
- public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix);
 
- private:
-  Ground ground_;
-  Steering steering_;
+namespace {
 
-  DISALLOW_COPY_AND_ASSIGN(Scene);
-};
+const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.07f, 0.07f, 0.07f});
 
-#endif //VRAZE_SCENE_H_
+}
+
+
+Steering::Steering(fplbase::AssetManager* asset_manager) :
+    mesh_(asset_manager->LoadMesh("meshes/steering.fplmesh")),
+    shader_(asset_manager->LoadShader("shaders/colored")) {
+}
+
+
+void Steering::Render(fplbase::Renderer* renderer,
+                      const mathfu::mat4& model_view_projection_matrix) {
+  renderer->set_model_view_projection(model_view_projection_matrix * kModelMatrix);
+  renderer->SetShader(shader_);
+  renderer->Render(mesh_, true);
+}

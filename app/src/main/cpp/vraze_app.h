@@ -43,8 +43,6 @@ class VRazeApp {
   void SetUpViewPortAndScissor(const gvr::Sizei& framebuf_size,
                                const gvr::BufferViewport& params);
 
-  AAssetManager* a_asset_mgr_;
-
   gvr_context* gvr_context_;
   std::unique_ptr<gvr::GvrApi> gvr_api_;
   bool gvr_api_initialized_;
@@ -56,7 +54,7 @@ class VRazeApp {
   gvr::ControllerState controller_state_;
 
   std::unique_ptr<fplbase::Renderer> renderer_;
-  std::unique_ptr<fplbase::AssetManager> fpl_asset_manager_;
+  std::unique_ptr<fplbase::AssetManager> asset_manager_;
 
   std::unique_ptr<Scene> scene_;
 

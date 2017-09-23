@@ -14,26 +14,28 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
-
-#include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
+#ifndef VRAZE_STEERING_H_
+#define VRAZE_STEERING_H_
 
 #include "macros.h"
-#include "ground.h"
-#include "steering.h"
 
-class Scene {
+#include <fplbase/asset_manager.h>
+#include <fplbase/mesh.h>
+
+#include "renderable.h"
+
+
+class Steering : public Renderable {
  public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix);
+  explicit Steering(fplbase::AssetManager* asset_manager);
 
+  virtual void Render(fplbase::Renderer *renderer,
+                      const mathfu::mat4 &model_view_projection_matrix) override;
  private:
-  Ground ground_;
-  Steering steering_;
+  fplbase::Mesh* mesh_;
+  fplbase::Shader* shader_;
 
-  DISALLOW_COPY_AND_ASSIGN(Scene);
+  DISALLOW_COPY_AND_ASSIGN(Steering);
 };
 
-#endif //VRAZE_SCENE_H_
+#endif //VRAZE_STEERING_H_

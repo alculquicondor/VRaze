@@ -25,3 +25,6 @@
 [submodule "dependencies/sdl"]
 	path = dependencies/sdl
 	url = https://github.com/google/fplbase
+[submodule "dependencies/googletest"]
+	path = dependencies/googletest
+	url = https://github.com/google/googletest

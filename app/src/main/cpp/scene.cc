@@ -18,20 +18,23 @@
 
 
 namespace {
+
 const mathfu::mat4 kGroundModelMatrix =
-    mathfu::mat4::FromTranslationVector({0.0f, -2.0f, 0.0f});
+    mathfu::mat4::FromTranslationVector({0.0f, -1.0f, 0.0f});
+
+const mathfu::mat4 kSteeringModelMatrix =
+    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.5f});
+
 }  // namespace
 
 
-Scene::Scene() {
-}
-
-
-void Scene::SetUp(fplbase::AssetManager *asset_manager) {
-  ground_.SetUp(asset_manager);
+Scene::Scene(fplbase::AssetManager* asset_manager)
+    : ground_(asset_manager), steering_(asset_manager) {
+  asset_manager->StartLoadingTextures();
 }
 
 
 void Scene::Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix) {
   ground_.Render(renderer, view_projection_matrix * kGroundModelMatrix);
+  steering_.Render(renderer, view_projection_matrix * kSteeringModelMatrix);
 }

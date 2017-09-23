@@ -34,6 +34,7 @@ LOCAL_C_INCLUDES := \
 LOCAL_SRC_FILES := \
   src/main/cpp/ground.cc \
   src/main/cpp/scene.cc \
+  src/main/cpp/steering.cc \
   src/main/cpp/vraze_jni.cc \
   src/main/cpp/vraze_app.cc
 

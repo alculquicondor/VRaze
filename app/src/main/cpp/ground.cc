@@ -22,23 +22,23 @@ struct Vertex {
   float x;
   float y;
   float z;
-  uint16_t u;
-  uint16_t v;
+  float u;
+  float v;
 };
 
 constexpr fplbase::Attribute kFormat[] = {
     fplbase::Attribute::kPosition3f,
-    fplbase::Attribute::kTexCoord2us,
+    fplbase::Attribute::kTexCoord2f,
     fplbase::Attribute::kEND
 };
 
 constexpr float kSize = 0.5f;
 
 constexpr Vertex kVerticesData[] = {
-    {-kSize, 0.0f, -kSize, 0, 0},
-    { kSize, 0.0f, -kSize, 1, 0},
-    { kSize, 0.0f,  kSize, 1, 1},
-    {-kSize, 0.0f,  kSize, 0, 1}
+    {-kSize, 0.0f, -kSize, 0.0f, 0.0f},
+    { kSize, 0.0f, -kSize, 1.0f, 0.0f},
+    { kSize, 0.0f,  kSize, 1.0f, 1.0f},
+    {-kSize, 0.0f,  kSize, 0.0f, 1.0f}
 };
 
 constexpr uint16_t kVerticesCount = 4;
@@ -53,20 +53,21 @@ constexpr uint16_t kIndicesCount = 6;
 }  // namespace
 
 
-Ground::Ground()
-    : mesh_(kVerticesData, kVerticesCount, sizeof(Vertex), kFormat) {
+Ground::Ground(fplbase::AssetManager* asset_manager)
+    : asset_manager_(asset_manager),
+      mesh_(kVerticesData, kVerticesCount, sizeof(Vertex), kFormat),
+      shader_(asset_manager->LoadShader("shaders/textured")), material_() {
+  auto texture = asset_manager->LoadTexture("textures/road.webp");
+  material_.textures().push_back(texture);
   mesh_.AddIndices(kIndices, kIndicesCount, &material_);
 }
 
 
-void Ground::SetUp(fplbase::AssetManager *asset_manager) {
-  shader_ = asset_manager->LoadShader("shaders/textured");
-}
-
-
-void Ground::Render(fplbase::Renderer* renderer, const mathfu::mat4& model_view_projection_matrix) {
+void Ground::Render(fplbase::Renderer* renderer,
+                    const mathfu::mat4& model_view_projection_matrix) {
+  if (!asset_manager_->TryFinalize())
+    return;
   renderer->set_model_view_projection(model_view_projection_matrix);
   renderer->SetShader(shader_);
-  renderer->Render(&mesh_, false);
+  renderer->Render(&mesh_);
 }
- 

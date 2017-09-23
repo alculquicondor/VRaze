@@ -72,10 +72,8 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr)
       gvr_api_(gvr::GvrApi::WrapNonOwned(gvr_context_)),
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
-      scene_viewport_(gvr_api_->CreateBufferViewport()),
-      a_asset_mgr_(AAssetManager_fromJava(env, asset_manager)) {
-  CHECK(a_asset_mgr_);
-  fplbase::SetAAssetManager(a_asset_mgr_);
+      scene_viewport_(gvr_api_->CreateBufferViewport()) {
+  fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
   LOGD("VRazeApp initialized.");
 }
 
@@ -140,10 +138,9 @@ void VRazeApp::OnSurfaceCreated() {
   LOGD("Initializing Renderer");
   renderer_ = std::make_unique<fplbase::Renderer>();
   renderer_->Initialize(GvrToMathfu(framebuf_size_), "VRazeApp");
-  fpl_asset_manager_ = std::make_unique<fplbase::AssetManager>(*renderer_);
+  asset_manager_ = std::make_unique<fplbase::AssetManager>(*renderer_);
 
-  scene_ = std::make_unique<Scene>();
-  scene_->SetUp(fpl_asset_manager_.get());
+  scene_ = std::make_unique<Scene>(asset_manager_.get());
 
   LOGD("Init complete.");
 }
@@ -212,5 +209,6 @@ void VRazeApp::SetUpViewPortAndScissor(const gvr::Sizei &framebuf_size,
   int height =
       static_cast<int>((rect.top - rect.bottom) * framebuf_size.height);
   renderer_->SetViewport({left, bottom, width, height});
+  // TODO: Discover how to make this work
   // renderer_->ScissorOn({left, bottom}, {width, height});
 }

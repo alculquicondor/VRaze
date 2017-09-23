@@ -17,6 +17,7 @@
 #ifndef VRAZE_GROUND_H_
 #define VRAZE_GROUND_H_
 
+#include <fplbase/asset_manager.h>
 #include <fplbase/mesh.h>
 
 #include "renderable.h"
@@ -24,11 +25,12 @@
 
 class Ground : public Renderable {
  public:
-  explicit Ground();
-  void SetUp(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer, const mathfu::mat4& model_view_projection_matrix);
+  explicit Ground(fplbase::AssetManager* asset_manager);
+  void Render(fplbase::Renderer* renderer,
+              const mathfu::mat4& model_view_projection_matrix) override;
 
  private:
+  fplbase::AssetManager* asset_manager_;
   fplbase::Mesh mesh_;
   fplbase::Material material_;
   fplbase::Shader* shader_;

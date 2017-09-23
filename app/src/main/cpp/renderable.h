@@ -17,13 +17,11 @@
 #ifndef VRAZE_RENDERABLE_H_
 #define VRAZE_RENDERABLE_H_
 
-#include <fplbase/asset_manager.h>
 #include <fplbase/renderer.h>
 
 
 class Renderable {
  public:
-  virtual void SetUp(fplbase::AssetManager* asset_manager) = 0;
   virtual void Render(
       fplbase::Renderer* renderer, const mathfu::mat4& model_view_projection_matrix) = 0;
 };
