@@ -38,6 +38,7 @@ class VRazeApp {
 
  private:
   void PrepareFramebuffer();
+  void GetInput();
   void DrawEye(gvr::Eye which_eye, const mathfu::mat4 &eye_view_matrix,
                const gvr::BufferViewport &viewport);
   void SetUpViewPortAndScissor(const gvr::Sizei& framebuf_size,
@@ -57,6 +58,9 @@ class VRazeApp {
   std::unique_ptr<fplbase::AssetManager> asset_manager_;
 
   std::unique_ptr<Scene> scene_;
+
+  mathfu::quat steering_;
+  bool accelerating_;
 
   DISALLOW_COPY_AND_ASSIGN(VRazeApp);
 };

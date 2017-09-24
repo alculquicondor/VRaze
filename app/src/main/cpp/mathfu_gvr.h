@@ -35,4 +35,9 @@ inline mathfu::mat4 GvrToMathfu(const gvr::Mat4f &mat) {
   return result;
 }
 
+
+inline mathfu::quat GvrToMathfu(const gvr::Quatf &quat) {
+  return {quat.qw, quat.qx, quat.qy, quat.qz};
+}
+
 #endif //VRAZE_MATHFU_GVR_H_

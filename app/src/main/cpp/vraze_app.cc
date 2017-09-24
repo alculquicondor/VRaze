@@ -31,6 +31,10 @@ const mathfu::vec4 kSkyColor{0.8f, 0.8f, 1.0f, 1.0f};
 constexpr float kNearClip = 0.1f;
 constexpr float kFarClip = 1000.0f;
 
+const mathfu::quat kUnrotatedSteering =
+    mathfu::quat::RotateFromTo({0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}) *
+        mathfu::quat::RotateFromTo({0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
+
 mathfu::mat4 PerspectiveMatrixFromView(const gvr::Rectf& fov, float near_clip, float far_clip) {
   mathfu::mat4 result;
   const float x_left = -tan(fov.left * M_PI / 180.0f) * near_clip;
@@ -166,6 +170,8 @@ void VRazeApp::OnDrawFrame() {
   const mathfu::mat4 right_eye_view =
       GvrToMathfu(gvr_api_->GetEyeFromHeadMatrix(GVR_RIGHT_EYE)) * head_view;
 
+  GetInput();
+
   gvr::Frame frame = swap_chain_->AcquireFrame();
   frame.BindBuffer(0);
 
@@ -176,6 +182,23 @@ void VRazeApp::OnDrawFrame() {
   DrawEye(GVR_RIGHT_EYE, right_eye_view, scene_viewport_);
   frame.Unbind();
   frame.Submit(viewport_list_, head_view_gvr);
+}
+
+
+void VRazeApp::GetInput() {
+  if (!controller_api_) {
+    // TODO: Implement input for cardboard.
+    steering_ = mathfu::kQuatIdentityf;
+    accelerating_ = false;
+    return;
+  }
+  controller_state_.Update(*controller_api_);
+  steering_ = GvrToMathfu(controller_state_.GetOrientation()) * kUnrotatedSteering;
+  steering_.Normalize();
+  steering_.vector().x = 0;
+  steering_.vector().y = 0;
+  steering_.Normalize();
+  accelerating_ = controller_state_.GetButtonDown(gvr::kControllerButtonClick);
 }
 
 
@@ -196,7 +219,7 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, steering_);
 }
 
 

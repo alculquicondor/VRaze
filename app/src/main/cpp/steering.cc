@@ -19,7 +19,7 @@
 
 namespace {
 
-const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.07f, 0.07f, 0.07f});
+const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.06f, 0.06f, 0.06f});
 
 }
 

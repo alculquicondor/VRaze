@@ -23,7 +23,8 @@ const mathfu::mat4 kGroundModelMatrix =
     mathfu::mat4::FromTranslationVector({0.0f, -1.0f, 0.0f});
 
 const mathfu::mat4 kSteeringModelMatrix =
-    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.5f});
+    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.4f}) *
+        mathfu::mat4::FromRotationMatrix(mathfu::mat4::RotationX(-0.3f));
 
 }  // namespace
 
@@ -34,7 +35,11 @@ Scene::Scene(fplbase::AssetManager* asset_manager)
 }
 
 
-void Scene::Render(fplbase::Renderer* renderer, const mathfu::mat4& view_projection_matrix) {
+void Scene::Render(fplbase::Renderer* renderer,
+                   const mathfu::mat4& view_projection_matrix,
+                   const mathfu::quat& steering) {
   ground_.Render(renderer, view_projection_matrix * kGroundModelMatrix);
-  steering_.Render(renderer, view_projection_matrix * kSteeringModelMatrix);
+  steering_.Render(renderer,
+                   view_projection_matrix * kSteeringModelMatrix *
+                       steering.ToMatrix4());
 }
