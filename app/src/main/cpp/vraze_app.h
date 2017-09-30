@@ -24,7 +24,6 @@
 #include <vr/gvr/capi/include/gvr_controller.h>
 
 #include "scene.h"
-#include "car.h"
 
 
 class VRazeApp {

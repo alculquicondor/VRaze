@@ -36,10 +36,12 @@ Scene::Scene(fplbase::AssetManager* asset_manager)
 
 void Scene::Render(fplbase::Renderer* renderer,
                    const mathfu::mat4& view_projection_matrix,
-                   const mathfu::vec2& viewer_position,
+                   const Car& car,
                    float steering_rotation) {
-  ground_.Render(renderer, view_projection_matrix *
-      mathfu::mat4::FromTranslationVector({-viewer_position.x, kGroundDepth, viewer_position.y}));
+  ground_.Render(renderer,view_projection_matrix *
+      mathfu::mat4::FromRotationMatrix(mathfu::mat4::RotationY({car.GetDirection().x, -car.GetDirection().y})) *
+      mathfu::mat4::FromTranslationVector(
+          {car.GetPosition().y, kGroundDepth, car.GetPosition().x}));
   steering_.Render(renderer,
                    view_projection_matrix * kSteeringModelMatrix *
                        mathfu::mat4::FromRotationMatrix(

@@ -16,16 +16,28 @@
  
 #include "car.h"
 
-#include "log_utils.h"
 
+namespace {
+
+inline mathfu::Matrix<float, 2> Rotation2D(float angle) {
+  float x = cosf(angle);
+  float y = sinf(angle);
+  return {x, y, -y, x};
+};
+
+constexpr float kSteeringSpeedCompensationRatio = 0.2f;
+
+}  // namespace
 
 constexpr float Car::WEIGHT = 1500.0f;
+constexpr float Car::LENGTH = 2.5f;
 constexpr float Car::MIN_TRACTION = 1500.0f;
 constexpr float Car::MAX_TRACTION = 40000.0f;
 constexpr float Car::TRACTION_INCREASE = 3000.0f;
 constexpr float Car::DRAG_RATIO = 8.0f;
 constexpr float Car::FRICTION_RATIO = 400.0f;
 constexpr float Car::BRAKING = 2000.0f;
+constexpr float Car::STEERING_RATIO = 0.3f;
 
 
 Car::Car(const mathfu::vec2 position)
@@ -33,9 +45,27 @@ Car::Car(const mathfu::vec2 position)
 }
 
 
-void Car::Move(float delta_time, bool accelerating, bool braking) {
+void Car::Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle) {
   position_ += direction_ * speed_ * delta_time;
 
+  UpdateDirection(delta_time, steering_wheel_angle);
+  UpdateSpeed(delta_time, accelerating, braking);
+}
+
+
+void Car::UpdateDirection(float delta_time, float steering_wheel_angle) {
+  float steering_angle = steering_wheel_angle * STEERING_RATIO;
+  if (steering_angle == 0.0f)
+    return;
+  float turn_radius = LENGTH / sinf(steering_angle);
+  float w = speed_ / turn_radius;
+  if (speed_ > 0)
+    w /= 1.0f + (speed_ * kSteeringSpeedCompensationRatio);
+  direction_ = (Rotation2D(w * delta_time) * direction_).Normalized();
+}
+
+
+void Car::UpdateSpeed(float delta_time, bool accelerating, bool braking) {
   float force = -DRAG_RATIO * speed_ * speed_ - FRICTION_RATIO * speed_;
   if (accelerating) {
     traction_ += delta_time * TRACTION_INCREASE;

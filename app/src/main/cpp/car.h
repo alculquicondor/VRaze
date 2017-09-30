@@ -23,24 +23,34 @@
 class Car {
  public:
   explicit Car(const mathfu::vec2 position);
-  void Move(float delta_time, bool accelerating, bool braking);
+  void Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle);
 
   inline const mathfu::vec2& GetPosition() const {
     return position_;
   }
+
+  inline const mathfu::vec2& GetDirection() const {
+    return direction_;
+  }
+
  private:
   mathfu::vec2 position_;
-  mathfu::vec2 direction_ = {0.0f, 1.0f};
+  mathfu::vec2 direction_ = {1.0f, 0.0f};
   float speed_ = 0.0f;
   float traction_;
 
+  void UpdateDirection(float delta_time, float steering_wheel_angle);
+  void UpdateSpeed(float delta_time, bool accelerating, bool braking);
+
   static const float WEIGHT;
+  static const float LENGTH;
   static const float MIN_TRACTION;
   static const float MAX_TRACTION;
   static const float TRACTION_INCREASE;
   static const float DRAG_RATIO;
   static const float FRICTION_RATIO;
   static const float BRAKING;
+  static const float STEERING_RATIO;
 };
 
 #endif //VRAZE_CAR_H_

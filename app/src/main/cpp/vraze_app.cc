@@ -177,7 +177,7 @@ void VRazeApp::OnDrawFrame() {
   prev_time_point_ = pred_time;
 
   GetInput();
-  car_.Move(delta_time, accelerating_, braking_);
+  car_.Move(delta_time, accelerating_, braking_, steering_rotation_);
 
   gvr::Frame frame = swap_chain_->AcquireFrame();
   frame.BindBuffer(0);
@@ -235,8 +235,7 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix,
-                 car_.GetPosition(), steering_rotation_);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, car_, steering_rotation_);
 }
 
 
