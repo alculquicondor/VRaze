@@ -37,9 +37,10 @@ Scene::Scene(fplbase::AssetManager* asset_manager)
 
 void Scene::Render(fplbase::Renderer* renderer,
                    const mathfu::mat4& view_projection_matrix,
-                   const mathfu::quat& steering) {
+                   float steering_rotation) {
   ground_.Render(renderer, view_projection_matrix * kGroundModelMatrix);
   steering_.Render(renderer,
                    view_projection_matrix * kSteeringModelMatrix *
-                       steering.ToMatrix4());
+                       mathfu::mat4::FromRotationMatrix(
+                           mathfu::mat4::RotationZ(steering_rotation)));
 }

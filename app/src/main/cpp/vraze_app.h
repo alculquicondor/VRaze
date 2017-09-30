@@ -43,6 +43,7 @@ class VRazeApp {
                const gvr::BufferViewport &viewport);
   void SetUpViewPortAndScissor(const gvr::Sizei& framebuf_size,
                                const gvr::BufferViewport& params);
+  void UpdateSteeringRotation(float steering_rotation);
 
   gvr_context* gvr_context_;
   std::unique_ptr<gvr::GvrApi> gvr_api_;
@@ -59,7 +60,7 @@ class VRazeApp {
 
   std::unique_ptr<Scene> scene_;
 
-  mathfu::quat steering_;
+  float steering_rotation_;
   bool accelerating_;
 
   DISALLOW_COPY_AND_ASSIGN(VRazeApp);

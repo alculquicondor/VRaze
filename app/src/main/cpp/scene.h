@@ -29,7 +29,7 @@ class Scene {
   explicit Scene(fplbase::AssetManager* asset_manager);
   void Render(fplbase::Renderer* renderer,
               const mathfu::mat4& view_projection_matrix,
-              const mathfu::quat& steering);
+              float steering);
 
  private:
   Ground ground_;

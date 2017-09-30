@@ -32,8 +32,8 @@ constexpr float kNearClip = 0.1f;
 constexpr float kFarClip = 1000.0f;
 
 const mathfu::quat kUnrotatedSteering =
-    mathfu::quat::RotateFromTo({0.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}) *
-        mathfu::quat::RotateFromTo({0.0f, 0.0f, 1.0f}, {0.0f, 1.0f, 0.0f});
+        mathfu::quat::FromAngleAxis(M_PI_2, {-1.0f, 0.0f, 0.0f}) *
+            mathfu::quat::FromAngleAxis(M_PI_2, {0.0f, 0.0f, 1.0f});
 
 mathfu::mat4 PerspectiveMatrixFromView(const gvr::Rectf& fov, float near_clip, float far_clip) {
   mathfu::mat4 result;
@@ -76,7 +76,8 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr)
       gvr_api_(gvr::GvrApi::WrapNonOwned(gvr_context_)),
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
-      scene_viewport_(gvr_api_->CreateBufferViewport()) {
+      scene_viewport_(gvr_api_->CreateBufferViewport()),
+      steering_rotation_(0.0f) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
   LOGD("VRazeApp initialized.");
 }
@@ -185,19 +186,26 @@ void VRazeApp::OnDrawFrame() {
 }
 
 
+void VRazeApp::UpdateSteeringRotation(float steering_rotation) {
+  if (steering_rotation > M_PI)
+    steering_rotation -= 2 * M_PI;
+  if (fabsf(steering_rotation - steering_rotation_) < M_PI) {
+    steering_rotation_ = steering_rotation;
+  }
+}
+
+
 void VRazeApp::GetInput() {
   if (!controller_api_) {
     // TODO: Implement input for cardboard.
-    steering_ = mathfu::kQuatIdentityf;
+    steering_rotation_ = 0.0f;
     accelerating_ = false;
     return;
   }
   controller_state_.Update(*controller_api_);
-  steering_ = GvrToMathfu(controller_state_.GetOrientation()) * kUnrotatedSteering;
-  steering_.Normalize();
-  steering_.vector().x = 0;
-  steering_.vector().y = 0;
-  steering_.Normalize();
+  mathfu::quat orientation = (kUnrotatedSteering *
+      GvrToMathfu(controller_state_.GetOrientation())).Normalized();
+  UpdateSteeringRotation(2.0f * atan2f(orientation.vector().y, orientation.scalar()));
   accelerating_ = controller_state_.GetButtonDown(gvr::kControllerButtonClick);
 }
 
@@ -219,7 +227,7 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, steering_);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, steering_rotation_);
 }
 
 
