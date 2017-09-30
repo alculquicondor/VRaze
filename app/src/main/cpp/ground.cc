@@ -32,7 +32,7 @@ constexpr fplbase::Attribute kFormat[] = {
     fplbase::Attribute::kEND
 };
 
-constexpr float kSize = 200.0f;
+constexpr float kSize = 10.0f;
 
 constexpr Vertex kVerticesData[] = {
     {-kSize, 0.0f, -kSize, 0.0f, 0.0f},
@@ -49,6 +49,8 @@ constexpr uint16_t kIndices[] = {
 };
 
 constexpr uint16_t kIndicesCount = 6;
+
+constexpr uint16_t kRoadPatches = 40;
 
 }  // namespace
 
@@ -67,7 +69,10 @@ void Ground::Render(fplbase::Renderer* renderer,
                     const mathfu::mat4& model_view_projection_matrix) {
   if (!asset_manager_->TryFinalize())
     return;
-  renderer->set_model_view_projection(model_view_projection_matrix);
-  renderer->SetShader(shader_);
-  renderer->Render(&mesh_);
+  for (int i = 0; i < kRoadPatches; ++i) {
+    renderer->set_model_view_projection(model_view_projection_matrix *
+        mathfu::mat4::FromTranslationVector({0.0f, 0.0f, -2.0f * kSize * i}));
+    renderer->SetShader(shader_);
+    renderer->Render(&mesh_);
+  }
 }
