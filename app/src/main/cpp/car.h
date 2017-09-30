@@ -23,7 +23,7 @@
 class Car {
  public:
   explicit Car(const mathfu::vec2 position);
-  void Move(float delta_time, bool accelerating);
+  void Move(float delta_time, bool accelerating, bool braking);
 
   inline const mathfu::vec2& GetPosition() const {
     return position_;
@@ -40,6 +40,7 @@ class Car {
   static const float TRACTION_INCREASE;
   static const float DRAG_RATIO;
   static const float FRICTION_RATIO;
+  static const float BRAKING;
 };
 
 #endif //VRAZE_CAR_H_

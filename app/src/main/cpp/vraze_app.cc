@@ -177,7 +177,7 @@ void VRazeApp::OnDrawFrame() {
   prev_time_point_ = pred_time;
 
   GetInput();
-  car_.Move(delta_time, accelerating_);
+  car_.Move(delta_time, accelerating_, braking_);
 
   gvr::Frame frame = swap_chain_->AcquireFrame();
   frame.BindBuffer(0);
@@ -206,6 +206,7 @@ void VRazeApp::GetInput() {
     // TODO: Implement input for cardboard.
     steering_rotation_ = 0.0f;
     accelerating_ = false;
+    braking_ = false;
     return;
   }
   controller_state_.Update(*controller_api_);
@@ -213,6 +214,7 @@ void VRazeApp::GetInput() {
       GvrToMathfu(controller_state_.GetOrientation())).Normalized();
   UpdateSteeringRotation(2.0f * atan2f(orientation.vector().y, orientation.scalar()));
   accelerating_ = controller_state_.GetButtonState(gvr::kControllerButtonClick);
+  braking_ = controller_state_.GetButtonState(gvr::kControllerButtonApp);
 }
 
 

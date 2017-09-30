@@ -21,10 +21,11 @@
 
 constexpr float Car::WEIGHT = 1500.0f;
 constexpr float Car::MIN_TRACTION = 1500.0f;
-constexpr float Car::MAX_TRACTION = 30000.0f;
-constexpr float Car::TRACTION_INCREASE = 2000.0f;
-constexpr float Car::DRAG_RATIO = 7.0f;
-constexpr float Car::FRICTION_RATIO = 300.0f;
+constexpr float Car::MAX_TRACTION = 40000.0f;
+constexpr float Car::TRACTION_INCREASE = 3000.0f;
+constexpr float Car::DRAG_RATIO = 8.0f;
+constexpr float Car::FRICTION_RATIO = 400.0f;
+constexpr float Car::BRAKING = 2000.0f;
 
 
 Car::Car(const mathfu::vec2 position)
@@ -32,7 +33,7 @@ Car::Car(const mathfu::vec2 position)
 }
 
 
-void Car::Move(float delta_time, bool accelerating) {
+void Car::Move(float delta_time, bool accelerating, bool braking) {
   position_ += direction_ * speed_ * delta_time;
 
   float force = -DRAG_RATIO * speed_ * speed_ - FRICTION_RATIO * speed_;
@@ -43,6 +44,9 @@ void Car::Move(float delta_time, bool accelerating) {
   } else {
     traction_ -= delta_time * TRACTION_INCREASE;
     traction_ = std::max(traction_, MIN_TRACTION);
+  }
+  if (braking) {
+    force -= BRAKING;
   }
   speed_ += force / WEIGHT * delta_time;
 }

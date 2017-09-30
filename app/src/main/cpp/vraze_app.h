@@ -65,6 +65,7 @@ class VRazeApp {
 
   float steering_rotation_;
   bool accelerating_;
+  bool braking_;
 
   DISALLOW_COPY_AND_ASSIGN(VRazeApp);
 };
