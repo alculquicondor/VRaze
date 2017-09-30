@@ -32,7 +32,7 @@ constexpr fplbase::Attribute kFormat[] = {
     fplbase::Attribute::kEND
 };
 
-constexpr float kSize = 10.0f;
+constexpr float kSize = 6.0f;
 
 constexpr Vertex kVerticesData[] = {
     {-kSize, 0.0f, -kSize, 0.0f, 0.0f},
