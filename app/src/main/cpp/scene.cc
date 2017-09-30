@@ -19,6 +19,7 @@
 
 namespace {
 
+const float kGroundDepth = -1.0f;
 const mathfu::mat4 kGroundModelMatrix =
     mathfu::mat4::FromTranslationVector({0.0f, -1.0f, 0.0f});
 
@@ -37,8 +38,10 @@ Scene::Scene(fplbase::AssetManager* asset_manager)
 
 void Scene::Render(fplbase::Renderer* renderer,
                    const mathfu::mat4& view_projection_matrix,
+                   const mathfu::vec2& viewer_position,
                    float steering_rotation) {
-  ground_.Render(renderer, view_projection_matrix * kGroundModelMatrix);
+  ground_.Render(renderer, view_projection_matrix *
+      mathfu::mat4::FromTranslationVector({-viewer_position.x, kGroundDepth, viewer_position.y}));
   steering_.Render(renderer,
                    view_projection_matrix * kSteeringModelMatrix *
                        mathfu::mat4::FromRotationMatrix(

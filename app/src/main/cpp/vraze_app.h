@@ -24,6 +24,7 @@
 #include <vr/gvr/capi/include/gvr_controller.h>
 
 #include "scene.h"
+#include "car.h"
 
 
 class VRazeApp {
@@ -54,11 +55,13 @@ class VRazeApp {
   gvr::BufferViewport scene_viewport_;
   gvr::Sizei framebuf_size_;
   gvr::ControllerState controller_state_;
+  gvr::ClockTimePoint prev_time_point_;
 
   std::unique_ptr<fplbase::Renderer> renderer_;
   std::unique_ptr<fplbase::AssetManager> asset_manager_;
 
   std::unique_ptr<Scene> scene_;
+  Car car_;
 
   float steering_rotation_;
   bool accelerating_;

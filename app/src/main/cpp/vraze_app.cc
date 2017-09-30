@@ -77,7 +77,7 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr)
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
       scene_viewport_(gvr_api_->CreateBufferViewport()),
-      steering_rotation_(0.0f) {
+      steering_rotation_(0.0f), car_({0.0f, 0.0f}) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
   LOGD("VRazeApp initialized.");
 }
@@ -113,6 +113,7 @@ void VRazeApp::OnSurfaceCreated() {
 
   LOGD("Initializing GL on GvrApi.");
   gvr_api_->InitializeGl();
+  prev_time_point_ = gvr::GvrApi::GetTimePointNow();
 
   LOGD("Initializing Controller Api.");
   controller_api_ = std::make_unique<gvr::ControllerApi>();
@@ -171,7 +172,12 @@ void VRazeApp::OnDrawFrame() {
   const mathfu::mat4 right_eye_view =
       GvrToMathfu(gvr_api_->GetEyeFromHeadMatrix(GVR_RIGHT_EYE)) * head_view;
 
+  float delta_time = 1.0e-9f * (
+      pred_time.monotonic_system_time_nanos - prev_time_point_.monotonic_system_time_nanos);
+  prev_time_point_ = pred_time;
+
   GetInput();
+  car_.Move(delta_time, accelerating_);
 
   gvr::Frame frame = swap_chain_->AcquireFrame();
   frame.BindBuffer(0);
@@ -206,7 +212,7 @@ void VRazeApp::GetInput() {
   mathfu::quat orientation = (kUnrotatedSteering *
       GvrToMathfu(controller_state_.GetOrientation())).Normalized();
   UpdateSteeringRotation(2.0f * atan2f(orientation.vector().y, orientation.scalar()));
-  accelerating_ = controller_state_.GetButtonDown(gvr::kControllerButtonClick);
+  accelerating_ = controller_state_.GetButtonState(gvr::kControllerButtonClick);
 }
 
 
@@ -227,7 +233,8 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, steering_rotation_);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix,
+                 car_.GetPosition(), steering_rotation_);
 }
 
 

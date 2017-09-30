@@ -14,29 +14,32 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
+#ifndef VRAZE_CAR_H_
+#define VRAZE_CAR_H_
 
-#include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
+#include <mathfu/glsl_mappings.h>
 
-#include "macros.h"
-#include "ground.h"
-#include "steering.h"
 
-class Scene {
+class Car {
  public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer,
-              const mathfu::mat4& view_projection_matrix,
-              const mathfu::vec2& viewer_position,
-              float steering);
+  explicit Car(const mathfu::vec2 position);
+  void Move(float delta_time, bool accelerating);
 
+  inline const mathfu::vec2& GetPosition() const {
+    return position_;
+  }
  private:
-  Ground ground_;
-  Steering steering_;
+  mathfu::vec2 position_;
+  mathfu::vec2 direction_ = {0.0f, 1.0f};
+  float speed_ = 0.0f;
+  float traction_;
 
-  DISALLOW_COPY_AND_ASSIGN(Scene);
+  static const float WEIGHT;
+  static const float MIN_TRACTION;
+  static const float MAX_TRACTION;
+  static const float TRACTION_INCREASE;
+  static const float DRAG_RATIO;
+  static const float FRICTION_RATIO;
 };
 
-#endif //VRAZE_SCENE_H_
+#endif //VRAZE_CAR_H_
