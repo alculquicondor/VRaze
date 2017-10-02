@@ -22,7 +22,7 @@ namespace {
 const float kGroundDepth = -1.2f;
 
 const mathfu::mat4 kSteeringModelMatrix =
-    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.4f}) *
+    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.3f}) *
         mathfu::mat4::FromRotationMatrix(mathfu::mat4::RotationX(-0.3f));
 
 }  // namespace

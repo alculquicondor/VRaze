@@ -19,7 +19,8 @@
 
 namespace {
 
-const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.06f, 0.06f, 0.06f});
+const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.06f, 0.06f, 0.06f}) *
+    mathfu::mat4::FromRotationMatrix(mathfu::mat4::RotationY(M_PI));
 
 }
 
