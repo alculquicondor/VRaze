@@ -28,6 +28,7 @@ LOCAL_C_INCLUDES := \
   $(DEPENDENCIES_FPLUTIL_DIR)/libfplutil/include \
   $(DEPENDENCIES_FPLBASE_DIR)/include \
   $(DEPENDENCIES_MATHFU_DIR)/include \
+  $(DEPENDENCIES_FLATBUFFERS_DIR)/include \
   $(DEPENDENCIES_GVR_SDK_DIR)/libraries/headers \
   $(LOCAL_PATH)/src
 
