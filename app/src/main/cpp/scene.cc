@@ -19,7 +19,7 @@
 
 namespace {
 
-const float kGroundDepth = -1.2f;
+const float kGroundDepth = -1.5f;
 
 const mathfu::mat4 kSteeringModelMatrix =
     mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.3f}) *

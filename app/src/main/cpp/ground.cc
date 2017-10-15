@@ -57,11 +57,10 @@ constexpr uint16_t kRoadPatches = 40;
 
 Ground::Ground(fplbase::AssetManager* asset_manager)
     : asset_manager_(asset_manager),
-      mesh_(kVerticesData, kVerticesCount, sizeof(Vertex), kFormat),
-      shader_(asset_manager->LoadShader("shaders/textured")), material_() {
+      mesh_(asset_manager->LoadMesh("meshes/road.fplmesh")),
+      shader_(asset_manager->LoadShader("shaders/textured")) {
   auto texture = asset_manager->LoadTexture("textures/road.webp");
-  material_.textures().push_back(texture);
-  mesh_.AddIndices(kIndices, kIndicesCount, &material_);
+  mesh_->GetMaterial(0)->textures().push_back(texture);
 }
 
 
@@ -69,10 +68,7 @@ void Ground::Render(fplbase::Renderer* renderer,
                     const mathfu::mat4& model_view_projection_matrix) {
   if (!asset_manager_->TryFinalize())
     return;
-  for (int i = 0; i < kRoadPatches; ++i) {
-    renderer->set_model_view_projection(model_view_projection_matrix *
-        mathfu::mat4::FromTranslationVector({0.0f, 0.0f, -2.0f * kSize * i}));
-    renderer->SetShader(shader_);
-    renderer->Render(&mesh_);
-  }
+  renderer->set_model_view_projection(model_view_projection_matrix);
+  renderer->SetShader(shader_);
+  renderer->Render(mesh_);
 }

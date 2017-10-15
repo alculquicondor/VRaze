@@ -37,7 +37,7 @@ constexpr float Car::TRACTION_INCREASE = 3000.0f;
 constexpr float Car::DRAG_RATIO = 8.0f;
 constexpr float Car::FRICTION_RATIO = 400.0f;
 constexpr float Car::BRAKING = 2000.0f;
-constexpr float Car::STEERING_RATIO = 0.3f;
+constexpr float Car::STEERING_RATIO = 0.2f;
 
 
 Car::Car(const mathfu::vec2 position)
