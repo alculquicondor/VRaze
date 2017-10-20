@@ -3,7 +3,7 @@
 in vec4 aPosition;
 in vec2 aTexCoord;
 
-out mediump vec2 vTexCoord;
+out highp vec2 vTexCoord;
 
 uniform mat4 model_view_projection;
 

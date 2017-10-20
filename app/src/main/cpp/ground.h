@@ -31,7 +31,9 @@ class Ground : public Renderable {
 
  private:
   fplbase::AssetManager* asset_manager_;
-  fplbase::Mesh* mesh_;
+  fplbase::Mesh ground_mesh_;
+  fplbase::Material ground_material_;
+  fplbase::Mesh* road_mesh_;
   fplbase::Shader* shader_;
 };
 

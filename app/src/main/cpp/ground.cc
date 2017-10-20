@@ -32,13 +32,13 @@ constexpr fplbase::Attribute kFormat[] = {
     fplbase::Attribute::kEND
 };
 
-constexpr float kSize = 6.0f;
+constexpr float kSize = 500.0f;
 
 constexpr Vertex kVerticesData[] = {
     {-kSize, 0.0f, -kSize, 0.0f, 0.0f},
-    { kSize, 0.0f, -kSize, 1.0f, 0.0f},
-    { kSize, 0.0f,  kSize, 1.0f, 1.0f},
-    {-kSize, 0.0f,  kSize, 0.0f, 1.0f}
+    { kSize, 0.0f, -kSize, 100.0f, 0.0f},
+    { kSize, 0.0f,  kSize, 100.0f, 100.0f},
+    {-kSize, 0.0f,  kSize, 0.0f, 100.0f}
 };
 
 constexpr uint16_t kVerticesCount = 4;
@@ -50,17 +50,22 @@ constexpr uint16_t kIndices[] = {
 
 constexpr uint16_t kIndicesCount = 6;
 
-constexpr uint16_t kRoadPatches = 40;
+const mathfu::mat4 kGroundTranslationDelta = mathfu::mat4::FromTranslationVector({0.0f, -0.01f, 0.0f});
 
 }  // namespace
 
 
 Ground::Ground(fplbase::AssetManager* asset_manager)
     : asset_manager_(asset_manager),
-      mesh_(asset_manager->LoadMesh("meshes/road.fplmesh")),
+      ground_mesh_(kVerticesData, kVerticesCount, sizeof(Vertex), kFormat),
+      ground_material_(),
+      road_mesh_(asset_manager->LoadMesh("meshes/road.fplmesh")),
       shader_(asset_manager->LoadShader("shaders/textured")) {
-  auto texture = asset_manager->LoadTexture("textures/road.webp");
-  mesh_->GetMaterial(0)->textures().push_back(texture);
+  fplbase::Texture* ground_texture = asset_manager->LoadTexture("textures/ground.webp");
+  ground_material_.textures().push_back(ground_texture);
+  ground_mesh_.AddIndices(kIndices, kIndicesCount, &ground_material_);
+  fplbase::Texture* road_texture = asset_manager->LoadTexture("textures/road.webp");
+  road_mesh_->GetMaterial(0)->textures().push_back(road_texture);
 }
 
 
@@ -68,7 +73,10 @@ void Ground::Render(fplbase::Renderer* renderer,
                     const mathfu::mat4& model_view_projection_matrix) {
   if (!asset_manager_->TryFinalize())
     return;
+  renderer->set_model_view_projection(model_view_projection_matrix * kGroundTranslationDelta);
+  renderer->SetShader(shader_);
+  renderer->Render(&ground_mesh_);
   renderer->set_model_view_projection(model_view_projection_matrix);
   renderer->SetShader(shader_);
-  renderer->Render(mesh_);
+  renderer->Render(road_mesh_);
 }
