@@ -25,19 +25,19 @@ inline mathfu::Matrix<float, 2> Rotation2D(float angle) {
   return {x, y, -y, x};
 };
 
-constexpr float kSteeringSpeedCompensationRatio = 0.2f;
+constexpr float kSteeringSpeedCompensationRatio = 0.12f;
 
 }  // namespace
 
 constexpr float Car::WEIGHT = 1500.0f;
 constexpr float Car::LENGTH = 2.5f;
-constexpr float Car::MIN_TRACTION = 1500.0f;
-constexpr float Car::MAX_TRACTION = 40000.0f;
-constexpr float Car::TRACTION_INCREASE = 3000.0f;
+constexpr float Car::MIN_TRACTION = 1000.0f;
+constexpr float Car::MAX_TRACTION = 25000.0f;
+constexpr float Car::TRACTION_INCREASE = 2500.0f;
 constexpr float Car::DRAG_RATIO = 8.0f;
 constexpr float Car::FRICTION_RATIO = 400.0f;
 constexpr float Car::BRAKING = 2000.0f;
-constexpr float Car::STEERING_RATIO = 0.2f;
+constexpr float Car::STEERING_RATIO = 0.15f;
 
 
 Car::Car(const mathfu::vec2 position)
@@ -59,8 +59,7 @@ void Car::UpdateDirection(float delta_time, float steering_wheel_angle) {
     return;
   float turn_radius = LENGTH / sinf(steering_angle);
   float w = speed_ / turn_radius;
-  if (speed_ > 0)
-    w /= 1.0f + (speed_ * kSteeringSpeedCompensationRatio);
+  w /= 1.0f + (fabsf(speed_) * kSteeringSpeedCompensationRatio);
   direction_ = (Rotation2D(w * delta_time) * direction_).Normalized();
 }
 
