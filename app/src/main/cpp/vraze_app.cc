@@ -35,6 +35,8 @@ const mathfu::quat kUnrotatedSteering =
         mathfu::quat::FromAngleAxis(M_PI_2, {-1.0f, 0.0f, 0.0f}) *
             mathfu::quat::FromAngleAxis(M_PI_2, {0.0f, 0.0f, 1.0f});
 
+const mathfu::vec2 kStartingPosition = {0.0f, 0.0f};
+
 mathfu::mat4 PerspectiveMatrixFromView(const gvr::Rectf& fov, float near_clip, float far_clip) {
   mathfu::mat4 result;
   const float x_left = -tan(fov.left * M_PI / 180.0f) * near_clip;
@@ -77,7 +79,7 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr)
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
       scene_viewport_(gvr_api_->CreateBufferViewport()),
-      steering_rotation_(0.0f), car_({0.0f, 0.0f}) {
+      steering_rotation_(0.0f) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
   LOGD("VRazeApp initialized.");
 }
@@ -147,6 +149,8 @@ void VRazeApp::OnSurfaceCreated() {
   asset_manager_ = std::make_unique<fplbase::AssetManager>(*renderer_);
 
   scene_ = std::make_unique<Scene>(asset_manager_.get());
+  road_descriptor_ = std::make_unique<RoadDescriptor>(asset_manager_.get());
+  car_physics_ = std::make_unique<CarPhysics>(kStartingPosition, road_descriptor_.get());
 
   LOGD("Init complete.");
 }
@@ -177,7 +181,7 @@ void VRazeApp::OnDrawFrame() {
   prev_time_point_ = pred_time;
 
   GetInput();
-  car_.Move(delta_time, accelerating_, braking_, steering_rotation_);
+  car_physics_->Move(delta_time, accelerating_, braking_, steering_rotation_);
 
   gvr::Frame frame = swap_chain_->AcquireFrame();
   frame.BindBuffer(0);
@@ -235,7 +239,7 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, car_, steering_rotation_);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, *car_physics_, steering_rotation_);
 }
 
 

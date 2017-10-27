@@ -19,10 +19,12 @@
 
 #include <mathfu/glsl_mappings.h>
 
+#include "road_descriptor.h"
+
 
 class CarPhysics {
  public:
-  explicit CarPhysics(const mathfu::vec2 position);
+  explicit CarPhysics(const mathfu::vec2 position, RoadDescriptor* road_descriptor);
   void Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle);
 
   inline const mathfu::vec2& GetPosition() const {
@@ -35,6 +37,7 @@ class CarPhysics {
 
  private:
   mathfu::vec2 position_;
+  RoadDescriptor* road_descriptor_;
   mathfu::vec2 direction_ = {1.0f, 0.0f};
   float speed_ = 0.0f;
   float traction_;

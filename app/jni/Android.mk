@@ -35,6 +35,7 @@ LOCAL_C_INCLUDES := \
 LOCAL_SRC_FILES := \
   src/main/cpp/car_physics.cc \
   src/main/cpp/ground.cc \
+  src/main/cpp/road_descriptor.cc \
   src/main/cpp/scene.cc \
   src/main/cpp/steering.cc \
   src/main/cpp/vraze_jni.cc \

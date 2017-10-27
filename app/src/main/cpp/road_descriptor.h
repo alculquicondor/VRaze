@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
+#ifndef VRAZE_ROAD_DESCRIPTOR_H_
+#define VRAZE_ROAD_DESCRIPTOR_H_
 
 #include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
 
-#include "car_physics.h"
-#include "macros.h"
-#include "ground.h"
-#include "steering.h"
-
-class Scene {
+class RoadDescriptor {
  public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer,
-              const mathfu::mat4& view_projection_matrix,
-              const CarPhysics& car_physics,
-              float steering);
+  RoadDescriptor(fplbase::AssetManager* asset_manager);
 
  private:
-  Ground ground_;
-  Steering steering_;
+  fplbase::Mesh::InterleavedVertexData vertex_data_;
 
-  DISALLOW_COPY_AND_ASSIGN(Scene);
+  void LoadMeshData(fplbase::FileAsset* file);
 };
 
-#endif //VRAZE_SCENE_H_
+#endif //VRAZE_ROAD_DESCRIPTOR_H_

@@ -41,8 +41,8 @@ constexpr float CarPhysics::BRAKING = 2000.0f;
 constexpr float CarPhysics::STEERING_RATIO = 0.15f;
 
 
-CarPhysics::CarPhysics(const mathfu::vec2 position)
-    : position_(position), traction_(MIN_TRACTION) {
+CarPhysics::CarPhysics(const mathfu::vec2 position, RoadDescriptor* road_descriptor)
+    : position_(position), traction_(MIN_TRACTION), road_descriptor_(road_descriptor) {
 }
 
 

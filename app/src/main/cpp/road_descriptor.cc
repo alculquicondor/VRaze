@@ -13,31 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+ 
+#include "road_descriptor.h"
 
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
+#include <mesh_generated.h>
 
-#include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
 
-#include "car_physics.h"
-#include "macros.h"
-#include "ground.h"
-#include "steering.h"
+RoadDescriptor::RoadDescriptor(fplbase::AssetManager *asset_manager) {
+  LoadMeshData(asset_manager->LoadFileAsset("meshes/road.fplmesh"));
+}
 
-class Scene {
- public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
-  void Render(fplbase::Renderer* renderer,
-              const mathfu::mat4& view_projection_matrix,
-              const CarPhysics& car_physics,
-              float steering);
 
- private:
-  Ground ground_;
-  Steering steering_;
+void RoadDescriptor::LoadMeshData(fplbase::FileAsset* file) {
+  const std::string& road_flatbuf = file->contents;
+  flatbuffers::Verifier verifier(
+      reinterpret_cast<const uint8_t *>(road_flatbuf.c_str()), road_flatbuf.length());
+  assert(meshdef::VerifyMeshBuffer(verifier));
 
-  DISALLOW_COPY_AND_ASSIGN(Scene);
-};
-
-#endif //VRAZE_SCENE_H_
+  fplbase::Mesh::ParseInterleavedVertexData(road_flatbuf.c_str(), &vertex_data_);
+}
