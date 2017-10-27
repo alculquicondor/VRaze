@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_CAR_H_
-#define VRAZE_CAR_H_
+#ifndef VRAZE_CAR_PHYSICS_H_
+#define VRAZE_CAR_PHYSICS_H_
 
 #include <mathfu/glsl_mappings.h>
 
 
-class Car {
+class CarPhysics {
  public:
-  explicit Car(const mathfu::vec2 position);
+  explicit CarPhysics(const mathfu::vec2 position);
   void Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle);
 
   inline const mathfu::vec2& GetPosition() const {
@@ -48,9 +48,10 @@ class Car {
   static const float MAX_TRACTION;
   static const float TRACTION_INCREASE;
   static const float DRAG_RATIO;
-  static const float FRICTION_RATIO;
+  static const float ROAD_FRICTION;
+  static const float GROUND_FRICTION;
   static const float BRAKING;
   static const float STEERING_RATIO;
 };
 
-#endif //VRAZE_CAR_H_
+#endif //VRAZE_CAR_PHYSICS_H_

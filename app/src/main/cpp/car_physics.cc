@@ -14,7 +14,7 @@
  * limitations under the License.
  */
  
-#include "car.h"
+#include "car_physics.h"
 
 
 namespace {
@@ -29,23 +29,24 @@ constexpr float kSteeringSpeedCompensationRatio = 0.12f;
 
 }  // namespace
 
-constexpr float Car::WEIGHT = 1500.0f;
-constexpr float Car::LENGTH = 2.5f;
-constexpr float Car::MIN_TRACTION = 1000.0f;
-constexpr float Car::MAX_TRACTION = 25000.0f;
-constexpr float Car::TRACTION_INCREASE = 2500.0f;
-constexpr float Car::DRAG_RATIO = 8.0f;
-constexpr float Car::FRICTION_RATIO = 400.0f;
-constexpr float Car::BRAKING = 2000.0f;
-constexpr float Car::STEERING_RATIO = 0.15f;
+constexpr float CarPhysics::WEIGHT = 1500.0f;
+constexpr float CarPhysics::LENGTH = 2.5f;
+constexpr float CarPhysics::MIN_TRACTION = 1000.0f;
+constexpr float CarPhysics::MAX_TRACTION = 25000.0f;
+constexpr float CarPhysics::TRACTION_INCREASE = 2500.0f;
+constexpr float CarPhysics::DRAG_RATIO = 8.0f;
+constexpr float CarPhysics::ROAD_FRICTION = 300.0f;
+constexpr float CarPhysics::GROUND_FRICTION = 800.0f;
+constexpr float CarPhysics::BRAKING = 2000.0f;
+constexpr float CarPhysics::STEERING_RATIO = 0.15f;
 
 
-Car::Car(const mathfu::vec2 position)
+CarPhysics::CarPhysics(const mathfu::vec2 position)
     : position_(position), traction_(MIN_TRACTION) {
 }
 
 
-void Car::Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle) {
+void CarPhysics::Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle) {
   position_ += direction_ * speed_ * delta_time;
 
   UpdateDirection(delta_time, steering_wheel_angle);
@@ -53,7 +54,7 @@ void Car::Move(float delta_time, bool accelerating, bool braking, float steering
 }
 
 
-void Car::UpdateDirection(float delta_time, float steering_wheel_angle) {
+void CarPhysics::UpdateDirection(float delta_time, float steering_wheel_angle) {
   float steering_angle = steering_wheel_angle * STEERING_RATIO;
   if (steering_angle == 0.0f)
     return;
@@ -64,8 +65,8 @@ void Car::UpdateDirection(float delta_time, float steering_wheel_angle) {
 }
 
 
-void Car::UpdateSpeed(float delta_time, bool accelerating, bool braking) {
-  float force = -DRAG_RATIO * speed_ * speed_ - FRICTION_RATIO * speed_;
+void CarPhysics::UpdateSpeed(float delta_time, bool accelerating, bool braking) {
+  float force = -DRAG_RATIO * speed_ * speed_ - ROAD_FRICTION * speed_;
   if (accelerating) {
     traction_ += delta_time * TRACTION_INCREASE;
     traction_ = std::min(traction_, MAX_TRACTION);

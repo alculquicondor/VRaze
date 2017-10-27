@@ -33,7 +33,7 @@ LOCAL_C_INCLUDES := \
   $(LOCAL_PATH)/src
 
 LOCAL_SRC_FILES := \
-  src/main/cpp/car.cc \
+  src/main/cpp/car_physics.cc \
   src/main/cpp/ground.cc \
   src/main/cpp/scene.cc \
   src/main/cpp/steering.cc \

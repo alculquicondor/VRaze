@@ -20,7 +20,7 @@
 #include <fplbase/asset_manager.h>
 #include <fplbase/renderer.h>
 
-#include "car.h"
+#include "car_physics.h"
 #include "macros.h"
 #include "ground.h"
 #include "steering.h"
@@ -30,7 +30,7 @@ class Scene {
   explicit Scene(fplbase::AssetManager* asset_manager);
   void Render(fplbase::Renderer* renderer,
               const mathfu::mat4& view_projection_matrix,
-              const Car& car,
+              const CarPhysics& car,
               float steering);
 
  private:

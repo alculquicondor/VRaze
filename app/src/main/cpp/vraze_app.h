@@ -60,7 +60,7 @@ class VRazeApp {
   std::unique_ptr<fplbase::AssetManager> asset_manager_;
 
   std::unique_ptr<Scene> scene_;
-  Car car_;
+  CarPhysics car_;
 
   float steering_rotation_;
   bool accelerating_;
