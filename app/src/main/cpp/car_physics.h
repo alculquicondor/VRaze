@@ -44,6 +44,7 @@ class CarPhysics {
 
   void UpdateDirection(float delta_time, float steering_wheel_angle);
   void UpdateSpeed(float delta_time, bool accelerating, bool braking);
+  float GetFriction() const;
 
   static const float WEIGHT;
   static const float LENGTH;

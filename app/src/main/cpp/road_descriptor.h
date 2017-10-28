@@ -17,16 +17,25 @@
 #ifndef VRAZE_ROAD_DESCRIPTOR_H_
 #define VRAZE_ROAD_DESCRIPTOR_H_
 
+#include <vector>
+
+#include <mesh_generated.h>
 #include <fplbase/asset_manager.h>
+#include <fplbase/material.h>
 
 class RoadDescriptor {
  public:
   RoadDescriptor(fplbase::AssetManager* asset_manager);
 
+  bool IsInside(mathfu::vec2 position) const;
+
  private:
   fplbase::Mesh::InterleavedVertexData vertex_data_;
+  const meshdef::Surface* surface_;
+  std::vector<mathfu::vec2> triangles_;
 
   void LoadMeshData(fplbase::FileAsset* file);
+  void ProcessBorders();
 };
 
 #endif //VRAZE_ROAD_DESCRIPTOR_H_

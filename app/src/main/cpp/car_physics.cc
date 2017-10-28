@@ -36,7 +36,7 @@ constexpr float CarPhysics::MAX_TRACTION = 25000.0f;
 constexpr float CarPhysics::TRACTION_INCREASE = 2500.0f;
 constexpr float CarPhysics::DRAG_RATIO = 8.0f;
 constexpr float CarPhysics::ROAD_FRICTION = 300.0f;
-constexpr float CarPhysics::GROUND_FRICTION = 800.0f;
+constexpr float CarPhysics::GROUND_FRICTION = 2000.0f;
 constexpr float CarPhysics::BRAKING = 2000.0f;
 constexpr float CarPhysics::STEERING_RATIO = 0.15f;
 
@@ -66,7 +66,7 @@ void CarPhysics::UpdateDirection(float delta_time, float steering_wheel_angle) {
 
 
 void CarPhysics::UpdateSpeed(float delta_time, bool accelerating, bool braking) {
-  float force = -DRAG_RATIO * speed_ * speed_ - ROAD_FRICTION * speed_;
+  float force = -DRAG_RATIO * speed_ * speed_ - GetFriction() * speed_;
   if (accelerating) {
     traction_ += delta_time * TRACTION_INCREASE;
     traction_ = std::min(traction_, MAX_TRACTION);
@@ -79,4 +79,9 @@ void CarPhysics::UpdateSpeed(float delta_time, bool accelerating, bool braking) 
     force -= BRAKING;
   }
   speed_ += force / WEIGHT * delta_time;
+}
+
+
+float CarPhysics::GetFriction() const {
+  return road_descriptor_->IsInside(position_) ? ROAD_FRICTION : GROUND_FRICTION;
 }
