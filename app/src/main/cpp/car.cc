@@ -14,24 +14,23 @@
  * limitations under the License.
  */
  
-#include "steering.h"
-
+#include "car.h"
 
 namespace {
 
-const mathfu::mat4 kModelMatrix = mathfu::mat4::FromScaleVector({0.06f, 0.06f, 0.06f});
+const mathfu::mat4 kModelMatrix = mathfu::mat4::FromTranslationVector({0.0f, -0.82f, 0.0f}) *
+    mathfu::mat4::FromScaleVector({0.07f, 0.07f, 0.07f});
 
 }
 
-
-Steering::Steering(fplbase::AssetManager* asset_manager) :
-    mesh_(asset_manager->LoadMesh("meshes/steering.fplmesh")),
-    shader_(asset_manager->LoadShader("shaders/colored")) {
+Car::Car(fplbase::AssetManager *asset_manager) :
+    mesh_(asset_manager->LoadMesh("meshes/car.fplmesh")),
+    shader_(asset_manager->LoadShader("shaders/uniform_colored")) {
 }
 
-
-void Steering::Render(fplbase::Renderer* renderer,
-                      const mathfu::mat4& model_view_projection_matrix) {
+void Car::Render(fplbase::Renderer *renderer, const mathfu::mat4 &model_view_projection_matrix) {
+  shader_->SetUniform("ambient_material", mathfu::vec4{0.2f, 0.2f, 0.2f, 1.0f});
+  shader_->SetUniform("diffuse_material", mathfu::vec4{0.8f, 0.8f, 0.8f, 1.0f});
   renderer->set_model_view_projection(model_view_projection_matrix * kModelMatrix);
   renderer->SetShader(shader_);
   renderer->Render(mesh_, true);

@@ -14,32 +14,24 @@
  * limitations under the License.
  */
 
-#ifndef VRAZE_SCENE_H_
-#define VRAZE_SCENE_H_
+#ifndef VRAZE_CAR_H_
+#define VRAZE_CAR_H_
+
+#include "renderable.h"
 
 #include <fplbase/asset_manager.h>
-#include <fplbase/renderer.h>
 
-#include "car.h"
-#include "car_physics.h"
-#include "macros.h"
-#include "ground.h"
-#include "steering.h"
 
-class Scene {
+class Car : public Renderable {
  public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
+  explicit Car(fplbase::AssetManager* asset_manager);
+
   void Render(fplbase::Renderer* renderer,
-              const mathfu::mat4& view_projection_matrix,
-              const CarPhysics& car_physics,
-              float steering);
+              const mathfu::mat4& model_view_projection_matrix) override;
 
  private:
-  Car car_;
-  Ground ground_;
-  Steering steering_;
-
-  DISALLOW_COPY_AND_ASSIGN(Scene);
+  fplbase::Mesh* mesh_;
+  fplbase::Shader* shader_;
 };
 
-#endif //VRAZE_SCENE_H_
+#endif //VRAZE_CAR_H_

@@ -50,7 +50,7 @@ constexpr uint16_t kIndices[] = {
 
 constexpr uint16_t kIndicesCount = 6;
 
-const mathfu::mat4 kGroundTranslationDelta = mathfu::mat4::FromTranslationVector({0.0f, -0.01f, 0.0f});
+const mathfu::mat4 kGroundTranslationDelta = mathfu::mat4::FromTranslationVector({0.0f, -0.02f, 0.0f});
 
 }  // namespace
 

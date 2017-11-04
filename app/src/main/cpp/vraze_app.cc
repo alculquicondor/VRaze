@@ -146,6 +146,9 @@ void VRazeApp::OnSurfaceCreated() {
   LOGD("Initializing Renderer");
   renderer_ = std::make_unique<fplbase::Renderer>();
   renderer_->Initialize(GvrToMathfu(framebuf_size_), "VRazeApp");
+  fplbase::RenderState render_state;
+  render_state.depth_state.test_enabled = true;
+  renderer_->SetRenderState(render_state);
   asset_manager_ = std::make_unique<fplbase::AssetManager>(*renderer_);
 
   scene_ = std::make_unique<Scene>(asset_manager_.get());

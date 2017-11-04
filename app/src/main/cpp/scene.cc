@@ -22,14 +22,16 @@ namespace {
 const float kGroundDepth = -1.5f;
 
 const mathfu::mat4 kSteeringModelMatrix =
-    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.3f}) *
+    mathfu::mat4::FromTranslationVector({0.0f, -0.3f, -0.4f}) *
         mathfu::mat4::FromRotationMatrix(mathfu::mat4::RotationX(-0.3f));
+
+const mathfu::vec4 kLightPosition = {0.0f, 800.0f, 0.0f, 1.0f};
 
 }  // namespace
 
 
 Scene::Scene(fplbase::AssetManager* asset_manager)
-    : ground_(asset_manager), steering_(asset_manager) {
+    : car_(asset_manager), ground_(asset_manager), steering_(asset_manager) {
   asset_manager->StartLoadingTextures();
 }
 
@@ -38,11 +40,13 @@ void Scene::Render(fplbase::Renderer* renderer,
                    const mathfu::mat4& view_projection_matrix,
                    const CarPhysics& car_physics,
                    float steering_rotation) {
-  ground_.Render(renderer,view_projection_matrix *
+  mathfu::mat4 world_movement =
       mathfu::mat4::FromRotationMatrix(
           mathfu::mat4::RotationY({car_physics.GetDirection().x, -car_physics.GetDirection().y})) *
-      mathfu::mat4::FromTranslationVector(
-          {car_physics.GetPosition().y, kGroundDepth, car_physics.GetPosition().x}));
+          mathfu::mat4::FromTranslationVector({car_physics.GetPosition().y, kGroundDepth, car_physics.GetPosition().x});
+  renderer->set_light_pos((world_movement * mathfu::vec4(kLightPosition)).xyz());
+  ground_.Render(renderer, view_projection_matrix * world_movement);
+  car_.Render(renderer, view_projection_matrix);
   steering_.Render(renderer,
                    view_projection_matrix * kSteeringModelMatrix *
                        mathfu::mat4::FromRotationMatrix(
