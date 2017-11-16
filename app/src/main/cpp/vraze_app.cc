@@ -79,12 +79,22 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr)
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
       scene_viewport_(gvr_api_->CreateBufferViewport()),
-      steering_rotation_(0.0f) {
+      steering_rotation_(0.0f),
+      env_(env) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
-  LOGD("VRazeApp initialized.");
 
-  this->env=env;
-  env->GetJavaVM(&vm);
+  env_->GetJavaVM(&vm_);
+  clazz = (jclass) env_->NewGlobalRef(env_->FindClass("pe/edu/ucsp/vraze/MainActivity"));
+  if(!clazz){
+    LOGD("HORROR - CANNOT FIND JAVA CLASS");
+  }
+
+  javaMethod = env_->GetStaticMethodID(clazz, "messageMe", "(FFFF)V");
+  if(!javaMethod){
+    LOGD("HORROR - CANNOT ACCESS JAVA METHOD");
+  }
+
+  LOGD("VRazeApp initialized.");
 }
 
 
@@ -188,7 +198,6 @@ void VRazeApp::OnDrawFrame() {
 
   GetInput();
   car_physics_->Move(delta_time, accelerating_, braking_, steering_rotation_);
-  //SendMessage(head_view_gvr.m[0][0],head_view_gvr.m[0][1],head_view_gvr.m[1][0],head_view_gvr.m[1][1]);
   SendMessage(car_physics_->GetPosition()[0],car_physics_->GetPosition()[1],
               car_physics_->GetDirection()[0],car_physics_->GetDirection()[1]);
   gvr::Frame frame = swap_chain_->AcquireFrame();
@@ -265,31 +274,6 @@ void VRazeApp::SetUpViewPortAndScissor(const gvr::Sizei &framebuf_size,
 }
 
 void VRazeApp::SendMessage(float x,float y, float dir0,float dir1){
-  // int status=this->vm->GetEnv((void**)&env,JNI_VERSION_1_6);
-  /*if(status<0)
-      status=this->vm->AttachCurrentThread(&env,vm);
-      if(status<0)
-          return;*/
-
-  vm->AttachCurrentThread(&env, 0);
-
-  //jstring mensaje = this->env->NewStringUTF("Este mensaje viene desde c++ :)");
-  //jfloatArray x = this->env->NewFloatArray(2);
-  // First get the class that contains the method you need to call
-  jclass clazz;// = env->FindClass("pe/edu/ucsp/vraze/MainActivity");
-
-  clazz = (jclass) env->NewGlobalRef(env->FindClass("pe/edu/ucsp/vraze/MainActivity"));
-  if(!clazz){
-    LOGD("HORROR - CANNOT FIND CLASS");
-  }
-
-  // Get the method that you want to call "(Ljava/lang/String;)V"
-  jmethodID metodo = env->GetStaticMethodID(clazz, "messageMe", "(FFFF)V");
-
-  if(!metodo){
-    LOGD("HORROR - CANNOT ACCESS METHOD");
-  }
-
-  this->env->CallStaticVoidMethod(clazz, metodo,x,y,dir0,dir1);
-  //vm->DetachCurrentThread();
+  vm_->AttachCurrentThread(&env_, 0);
+  env_->CallStaticVoidMethod(clazz, javaMethod,x,y,dir0,dir1);
 }

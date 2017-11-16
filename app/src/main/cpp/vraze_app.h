@@ -68,8 +68,10 @@ class VRazeApp {
   bool accelerating_;
   bool braking_;
 
-  JNIEnv *env;
-  JavaVM* vm;
+  JNIEnv *env_;
+  JavaVM* vm_;
+  jmethodID javaMethod;
+  jclass clazz;
   DISALLOW_COPY_AND_ASSIGN(VRazeApp);
 };
 
