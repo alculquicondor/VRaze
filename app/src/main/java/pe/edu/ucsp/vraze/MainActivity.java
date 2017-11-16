@@ -61,9 +61,8 @@ public class MainActivity extends Activity {
       };
 
   public static void messageMe(float x, float y, float dir0, float dir1) {
-    System.out.println("x: " + String.valueOf(x) + " y: " + String.valueOf(y));
-    System.out.println("d0: " + String.valueOf(dir0) + " d1: " + String.valueOf(dir1));
-    //Log.d(TAG, Arrays.toString(text));
+    Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
+    Log.d(TAG,"d0: " + String.valueOf(dir0) + " d1: " + String.valueOf(dir1));
   }
 
   @Override
