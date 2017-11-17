@@ -88,7 +88,8 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
       gvr_api_initialized_(false),
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
       scene_viewport_(gvr_api_->CreateBufferViewport()),
-      steering_rotation_(0.0f) {
+      steering_rotation_(0.0f),
+      env_(env) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
 
   for (int i = 0; i < 2; ++i) {
@@ -113,6 +114,18 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
   gvr_audio_api_->PlaySound(soundtrack_sound_, true);
   gvr_audio_api_->PlaySound(gravel_sound_, true);
   gvr_audio_api_->PauseSound(gravel_sound_);
+
+
+  env_->GetJavaVM(&vm_);
+  clazz = (jclass) env_->NewGlobalRef(env_->FindClass("pe/edu/ucsp/vraze/MainActivity"));
+  if(!clazz){
+    LOGD("HORROR - CANNOT FIND JAVA CLASS");
+  }
+
+  javaMethod = env_->GetStaticMethodID(clazz, "messageMe", "(FFFF)V");
+  if(!javaMethod){
+    LOGD("HORROR - CANNOT ACCESS JAVA METHOD");
+  }
 
   LOGD("VRazeApp initialized.");
 }
@@ -224,6 +237,8 @@ void VRazeApp::OnDrawFrame() {
 
   GetInput();
   car_physics_->Move(delta_time, accelerating_, braking_, steering_rotation_);
+  SendMessage(car_physics_->GetPosition()[0],car_physics_->GetPosition()[1],
+              car_physics_->GetDirection()[0],car_physics_->GetDirection()[1]);
 
   if (not gvr_audio_api_->IsSoundPlaying(engine_sound_[accelerating_])) {
     if (accelerating_) {
@@ -315,4 +330,9 @@ void VRazeApp::SetUpViewPortAndScissor(const gvr::Sizei &framebuf_size,
   renderer_->SetViewport({left, bottom, width, height});
   // TODO: Discover how to make this work
   // renderer_->ScissorOn({left, bottom}, {width, height});
+}
+
+void VRazeApp::SendMessage(float x,float y, float dir0,float dir1){
+  vm_->AttachCurrentThread(&env_, 0);
+  env_->CallStaticVoidMethod(clazz, javaMethod,x,y,dir0,dir1);
 }

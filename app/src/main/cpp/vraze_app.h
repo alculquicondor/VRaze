@@ -39,6 +39,7 @@ class VRazeApp {
   void OnDrawFrame();
 
  private:
+  void SendMessage(float x, float y, float dir0, float dir1);
   void PrepareFramebuffer();
   void GetInput();
   void DrawEye(gvr::Eye which_eye, const mathfu::mat4 &eye_view_matrix,
@@ -74,6 +75,10 @@ class VRazeApp {
   bool accelerating_;
   bool braking_;
 
+  JNIEnv *env_;
+  JavaVM* vm_;
+  jmethodID javaMethod;
+  jclass clazz;
   DISALLOW_COPY_AND_ASSIGN(VRazeApp);
 };
 
