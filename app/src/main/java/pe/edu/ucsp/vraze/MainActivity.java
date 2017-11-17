@@ -17,6 +17,7 @@
 package pe.edu.ucsp.vraze;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -100,7 +101,8 @@ public class MainActivity extends Activity {
     AssetManager assetManager = getResources().getAssets();
 
     nativeVRaze =
-        nativeOnCreate(assetManager, gvrLayout.getGvrApi().getNativeGvrContext());
+        nativeOnCreate(getClass().getClassLoader(), getApplicationContext(), assetManager,
+            gvrLayout.getGvrApi().getNativeGvrContext());
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
   }
@@ -181,7 +183,8 @@ public class MainActivity extends Activity {
         }
       };
 
-  private native long nativeOnCreate(AssetManager assetManager, long gvrContextPtr);
+  private native long nativeOnCreate(ClassLoader appClassLoader, Context context,
+      AssetManager assetManager, long gvrContextPtr);
 
   private native void nativeOnDestroy(long controllerPaintJptr);
 

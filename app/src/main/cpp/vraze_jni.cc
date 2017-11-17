@@ -26,8 +26,11 @@ inline VRazeApp *ptr(jlong jptr) { return reinterpret_cast<VRazeApp *>(jptr); }
 }  // namespace
 
 NATIVE_METHOD(jlong, nativeOnCreate)
-(JNIEnv *env, jobject obj, jobject asset_mgr, jlong gvr_context_ptr) {
-  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr));
+(JNIEnv *env, jobject obj, jobject class_loader, jobject android_context, jobject asset_mgr,
+ jlong gvr_context_ptr) {
+  auto audio_api = std::make_unique<gvr::AudioApi>();
+  audio_api->Init(env, android_context, class_loader, GVR_AUDIO_RENDERING_BINAURAL_HIGH_QUALITY);
+  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr, std::move(audio_api)));
 }
 
 NATIVE_METHOD(void, nativeOnResume)

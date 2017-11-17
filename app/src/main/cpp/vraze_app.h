@@ -22,13 +22,15 @@
 #include <jni.h>
 #include <vr/gvr/capi/include/gvr.h>
 #include <vr/gvr/capi/include/gvr_controller.h>
+#include <vr/gvr/capi/include/gvr_audio.h>
 
 #include "scene.h"
 
 
 class VRazeApp {
  public:
-  explicit VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr);
+  explicit VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
+                    std::unique_ptr<gvr::AudioApi> audio_api);
   ~VRazeApp();
   void OnResume();
   void OnPause();
@@ -48,7 +50,8 @@ class VRazeApp {
   gvr_context* gvr_context_;
   std::unique_ptr<gvr::GvrApi> gvr_api_;
   bool gvr_api_initialized_;
-  std::unique_ptr<gvr::ControllerApi> controller_api_;
+  std::unique_ptr<gvr::ControllerApi> gvr_controller_api_;
+  std::unique_ptr<gvr::AudioApi> gvr_audio_api_;
   std::unique_ptr<gvr::SwapChain> swap_chain_;
   gvr::BufferViewportList viewport_list_;
   gvr::BufferViewport scene_viewport_;
@@ -62,6 +65,10 @@ class VRazeApp {
   std::unique_ptr<Scene> scene_;
   std::unique_ptr<CarPhysics> car_physics_;
   std::unique_ptr<RoadDescriptor> road_descriptor_;
+
+  gvr::AudioSourceId engine_sound_[2];
+  gvr::AudioSourceId gravel_sound_;
+  gvr::AudioSourceId soundtrack_sound_;
 
   float steering_rotation_;
   bool accelerating_;

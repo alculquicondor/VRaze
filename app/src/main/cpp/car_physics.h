@@ -35,16 +35,30 @@ class CarPhysics {
     return direction_;
   }
 
+  inline float GetSpeed() const {
+    return speed_;
+  }
+
+  inline bool IsOnRoad() const {
+    return on_road_;
+  }
+
  private:
   mathfu::vec2 position_;
   RoadDescriptor* road_descriptor_;
   mathfu::vec2 direction_ = {1.0f, 0.0f};
   float speed_ = 0.0f;
   float traction_;
+  bool on_road_;
 
+  inline void UpdateOnRoad() {
+    on_road_ = road_descriptor_->IsInside(position_);
+  }
   void UpdateDirection(float delta_time, float steering_wheel_angle);
   void UpdateSpeed(float delta_time, bool accelerating, bool braking);
-  float GetFriction() const;
+  inline float GetFriction() const {
+    return on_road_ ? ROAD_FRICTION : GROUND_FRICTION;
+  }
 
   static const float WEIGHT;
   static const float LENGTH;
