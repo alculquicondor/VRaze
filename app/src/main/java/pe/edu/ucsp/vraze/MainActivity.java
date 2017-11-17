@@ -25,6 +25,8 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
+import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.vr.ndk.base.AndroidCompat;
 import com.google.vr.ndk.base.GvrLayout;
 
@@ -63,6 +65,7 @@ public class MainActivity extends Activity {
   public static void messageMe(float x, float y, float dir0, float dir1) {
     Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
     Log.d(TAG,"d0: " + String.valueOf(dir0) + " d1: " + String.valueOf(dir1));
+    Menu.broadcastScore(x,y,dir0,dir1,false);
   }
 
   @Override
@@ -199,4 +202,46 @@ public class MainActivity extends Activity {
   private native void nativeOnSurfaceChanged(int width, int height, long controllerPaintJptr);
 
   private native void nativeOnDrawFrame(long controllerPaintJptr);
+
+
+
+  /**
+   * RealTimeMessageReceivedListener implementation for the messages
+   */
+  public static RealTimeMessageReceivedListener mMessageReceivedListener = new RealTimeMessageReceivedListener() {
+    @Override
+    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
+      byte[] buf = rtm.getMessageData();
+      Log.d(TAG, "recivo" + String.valueOf(buf[0]));
+      Log.d(TAG, "recivo" + String.valueOf(buf[1]));
+      String sender = rtm.getSenderParticipantId();
+      Log.d(TAG, "Message received: " + (float) buf[0] + "/" + (char) buf[1]);
+
+
+    }
+  };
+
+  // updates the screen with the scores from our peers
+  public static void updatePeerDisplay() {
+   /* if(Juego.score0!=null)
+      Juego.score0.setText(Menu.mScore+" - Me");
+    Log.d(TAG,String.valueOf(Juego.my_score));
+    int i = 0;
+
+    if (Menu.mRoomId != null) {
+      for (Participant p :  Menu.mParticipants) {
+        String pid = p.getParticipantId();
+        if (pid.equals(Menu.mMyId))
+          continue;
+        if (p.getStatus() != Participant.STATUS_JOINED)
+          continue;
+        int score = Menu.mParticipantScore.containsKey(pid) ?  Menu.mParticipantScore.get(pid) : 0;
+        if(Juego.score1!=null)
+          Juego.score1.setText((score + " - " +
+                  p.getDisplayName()));
+        ++i;
+      }
+    }
+*/
+  }
 }

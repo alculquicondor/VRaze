@@ -52,9 +52,9 @@ limitations under the License.
       android:screenOrientation="landscape">
 
       <intent-filter>
-        <action android:name="android.intent.action.MAIN" />
+        <!--action android:name="android.intent.action.MAIN" />
 
-        <category android:name="android.intent.category.LAUNCHER" />
+        <category android:name="android.intent.category.LAUNCHER" /-->
         <category android:name="com.google.intent.category.DAYDREAM" />
           
         <!-- This marks the Activity as a Cardboard Activity and allows it
@@ -63,6 +63,24 @@ limitations under the License.
       </intent-filter>
 
     </activity>
+
+
+    <meta-data android:name="com.google.android.gms.games.APP_ID"
+        android:value="@string/app_id"/>
+    <meta-data android:name="com.google.android.gms.version"
+        android:value="@integer/google_play_services_version"/>
+
+    <activity
+        android:name=".Menu"
+        android:label="VRaze"
+        android:allowBackup="false"
+        android:screenOrientation="portrait">
+      <intent-filter>
+        <action android:name="android.intent.action.MAIN"/>
+        <category android:name="android.intent.category.LAUNCHER"/>
+      </intent-filter>
+    </activity>
+
 
   </application>
 

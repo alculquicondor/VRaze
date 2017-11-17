@@ -1,3 +1,11 @@
 <resources>
+    <string name="app_id">92895454065</string>
     <string name="app_name">VRaze</string>
+    <string name="single_player">Single Player</string>
+    <string name="quick_game">Quick game</string>
+    <string name="sign_out">Sign Out</string>
+    <string name="please_wait">Please wait&#8230;</string>
+    <string name="game_problem">An error occurred while starting the game. Please try again.</string>
+    <string name="click_me">Click me!</string>
+    <string name="signin_other_error">There was an issue with sign in. Please try again later.</string>
 </resources>
