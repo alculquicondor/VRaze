@@ -24,6 +24,10 @@
   JNIEXPORT return_type JNICALL                 \
       Java_pe_edu_ucsp_vraze_MainActivity_##method_name
 
+#define NATIVE_METHOD_RT(return_type, method_name) \
+  JNIEXPORT return_type JNICALL                 \
+      Java_pe_edu_ucsp_vraze_RealTime_##method_name
+
 extern "C" {
 
 NATIVE_METHOD(jlong, nativeOnCreate)
@@ -41,7 +45,7 @@ NATIVE_METHOD(void, nativeOnDrawFrame)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
 NATIVE_METHOD(void, nativeOnDestroy)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
-NATIVE_METHOD(void, nativeMoveCar)
+NATIVE_METHOD_RT(void, nativeMoveCar)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir0, float dir1);
 }
 

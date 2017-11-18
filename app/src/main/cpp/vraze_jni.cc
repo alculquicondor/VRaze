@@ -17,6 +17,7 @@
 #include "vraze_jni.h"
 
 #include "vraze_app.h"
+#include "log_utils.h"
 
 namespace {
 inline jlong jptr(VRazeApp *ptr) { return reinterpret_cast<intptr_t>(ptr); }
@@ -62,7 +63,8 @@ NATIVE_METHOD(void, nativeOnDestroy)
   delete ptr(controller_paint_jptr);
 }
 
-NATIVE_METHOD(void, nativeMoveCar)
-(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir0, float dir1){
-
+NATIVE_METHOD_RT(void, nativeMoveCar)
+(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y){
+  
 }
+
