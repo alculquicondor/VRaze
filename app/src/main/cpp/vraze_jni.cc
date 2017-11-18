@@ -63,8 +63,9 @@ NATIVE_METHOD(void, nativeOnDestroy)
   delete ptr(controller_paint_jptr);
 }
 
+
 NATIVE_METHOD_RT(void, nativeMoveCar)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y){
-  
+
 }
 

@@ -45,8 +45,10 @@ NATIVE_METHOD(void, nativeOnDrawFrame)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
 NATIVE_METHOD(void, nativeOnDestroy)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
-NATIVE_METHOD_RT(void, nativeMoveCar)
-(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir0, float dir1);
+
+NATIVE_METHOD(void, nativeMoveCar)
+(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y);
+
 }
 
 #endif //VRAZE_VRAZE_JNI_H_
