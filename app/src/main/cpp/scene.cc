@@ -27,12 +27,15 @@ const mathfu::mat4 kSteeringModelMatrix =
 
 const mathfu::vec4 kLightPosition = {-500.0f, 2000.0f, -500.0f, 1.0f};
 
+const mathfu::vec4 kCarColor = {0.2f, 0.2f, 0.8f, 1.0f};
+const mathfu::vec4 kOpponentCarColor = {0.8f, 0.2f, 0.2f, 1.0f};
+
 }  // namespace
 
 
 Scene::Scene(fplbase::AssetManager* asset_manager)
-    : car_(asset_manager), opponent_car_(asset_manager), ground_(asset_manager),
-      steering_(asset_manager) {
+    : car_(asset_manager, kCarColor), opponent_car_(asset_manager, kOpponentCarColor),
+      ground_(asset_manager), steering_(asset_manager) {
   asset_manager->StartLoadingTextures();
 }
 

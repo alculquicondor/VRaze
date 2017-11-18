@@ -24,7 +24,7 @@
 
 class Car : public Renderable {
  public:
-  explicit Car(fplbase::AssetManager* asset_manager);
+  explicit Car(fplbase::AssetManager* asset_manager, const mathfu::vec4& color);
 
   void Render(fplbase::Renderer* renderer,
               const mathfu::mat4& model_view_projection_matrix) override;
@@ -32,6 +32,8 @@ class Car : public Renderable {
  private:
   fplbase::Mesh* mesh_;
   fplbase::Shader* shader_;
+
+  mathfu::vec4 color_;
 };
 
 #endif //VRAZE_CAR_H_
