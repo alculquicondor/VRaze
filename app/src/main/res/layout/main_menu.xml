@@ -30,7 +30,8 @@
         android:layout_alignStart="@+id/button_single_player"
         android:layout_below="@+id/button_single_player"
         android:layout_marginTop="16dp"
-        android:text="Quick game" />
+        android:text="Quick game"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/button_sign_out"
@@ -38,7 +39,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:text="Sign Out" />
+        android:text="Sign Out"
+        android:visibility="invisible" />
 
 
     <com.google.android.gms.common.SignInButton

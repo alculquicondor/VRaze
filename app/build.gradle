@@ -48,18 +48,11 @@ dependencies {
     compile 'com.google.vr:sdk-base:1.80.0'
     testCompile 'junit:junit:4.12'
 
-    //soporte googleplay
+    //support googleplay
 
-    if (!project.hasProperty('appcompat_library_version')) {
-        ext.appcompat_library_version = '20.0.+'
-    }
     if (!project.hasProperty('support_library_version')) {
         ext.support_library_version = '20.0.+'
     }
-    if (!project.hasProperty('gms_library_version')) {
-        ext.gms_library_version = '8.4.0'
-    }
-
 
     compile "com.android.support:support-v4:${support_library_version}"
     compile project(':libraries:BaseGameUtils')
