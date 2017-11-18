@@ -63,6 +63,6 @@ NATIVE_METHOD(void, nativeOnDestroy)
 }
 
 NATIVE_METHOD(void, nativeMoveCar)
-(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir0, float dir1){
+(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y){
 
 }
