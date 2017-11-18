@@ -39,9 +39,9 @@ const mathfu::quat kUnrotatedSteering =
         mathfu::quat::FromAngleAxis(M_PI_2, {-1.0f, 0.0f, 0.0f}) *
             mathfu::quat::FromAngleAxis(M_PI_2, {0.0f, 0.0f, 1.0f});
 
-const mathfu::vec2 kStartingPosition = {0.0f, 0.0f};
+const mathfu::vec2 kStartingPositions[] = {{0.0f, 0.0f}, {0.0f, -4.0f}};
 
-const mathfu::vec3 kEnginePosition = {0.0f, -0.5f, 1.0f};
+const mathfu::vec3 kEnginePosition = {0.0f, -0.2f, 1.0f};
 const mathfu::vec3 kGroundPosition = {0.0f, -1.5f, 0.0f};
 
 mathfu::mat4 PerspectiveMatrixFromView(const gvr::Rectf& fov, float near_clip, float far_clip) {
@@ -81,7 +81,7 @@ mathfu::mat4 PerspectiveMatrixFromView(const gvr::Rectf& fov, float near_clip, f
 
 
 VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
-                   std::unique_ptr<gvr::AudioApi> audio_api)
+                   std::unique_ptr<gvr::AudioApi> audio_api, bool multiplayer, int player_number)
     : gvr_context_(reinterpret_cast<gvr_context*>(gvr_context_ptr)),
       gvr_api_(gvr::GvrApi::WrapNonOwned(gvr_context_)),
       gvr_audio_api_(std::move(audio_api)),
@@ -89,7 +89,9 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
       viewport_list_(gvr_api_->CreateEmptyBufferViewportList()),
       scene_viewport_(gvr_api_->CreateBufferViewport()),
       steering_rotation_(0.0f),
-      env_(env) {
+      env_(env),
+      multiplayer_(multiplayer),
+      player_number_(player_number) {
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
 
   for (int i = 0; i < 2; ++i) {
@@ -203,7 +205,10 @@ void VRazeApp::OnSurfaceCreated() {
 
   scene_ = std::make_unique<Scene>(asset_manager_.get());
   road_descriptor_ = std::make_unique<RoadDescriptor>(asset_manager_.get());
-  car_physics_ = std::make_unique<CarPhysics>(kStartingPosition, road_descriptor_.get());
+  car_physics_ = std::make_unique<CarPhysics>(kStartingPositions[player_number_],
+                                              road_descriptor_.get());
+  opponent_car_physics_ = std::make_unique<CarPhysics>(kStartingPositions[1 - player_number_],
+                                                       road_descriptor_.get());
 
   LOGD("Init complete.");
 }
@@ -315,7 +320,8 @@ void VRazeApp::DrawEye(gvr::Eye which_eye,
   SetUpViewPortAndScissor(framebuf_size_, viewport);
   mathfu::mat4 proj_matrix = PerspectiveMatrixFromView(
       viewport.GetSourceFov(), kNearClip, kFarClip);
-  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, *car_physics_, steering_rotation_);
+  scene_->Render(renderer_.get(), proj_matrix * eye_view_matrix, *car_physics_,
+                 *opponent_car_physics_, steering_rotation_);
 }
 
 

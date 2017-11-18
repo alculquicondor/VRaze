@@ -30,7 +30,7 @@ NATIVE_METHOD(jlong, nativeOnCreate)
  jlong gvr_context_ptr) {
   auto audio_api = std::make_unique<gvr::AudioApi>();
   audio_api->Init(env, android_context, class_loader, GVR_AUDIO_RENDERING_BINAURAL_HIGH_QUALITY);
-  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr, std::move(audio_api)));
+  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr, std::move(audio_api), true, 0));
 }
 
 NATIVE_METHOD(void, nativeOnResume)

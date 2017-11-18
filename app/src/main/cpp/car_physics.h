@@ -27,8 +27,16 @@ class CarPhysics {
   explicit CarPhysics(const mathfu::vec2 position, RoadDescriptor* road_descriptor);
   void Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle);
 
+  inline void SetPosition(mathfu::vec2& position) {
+    position_ = position;
+  }
+
   inline const mathfu::vec2& GetPosition() const {
     return position_;
+  }
+
+  inline void SetDirection(mathfu::vec2& direction) {
+    direction_ = direction;
   }
 
   inline const mathfu::vec2& GetDirection() const {

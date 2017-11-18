@@ -30,7 +30,7 @@
 class VRazeApp {
  public:
   explicit VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
-                    std::unique_ptr<gvr::AudioApi> audio_api);
+                    std::unique_ptr<gvr::AudioApi> audio_api, bool multiplayer, int player_number);
   ~VRazeApp();
   void OnResume();
   void OnPause();
@@ -63,9 +63,13 @@ class VRazeApp {
   std::unique_ptr<fplbase::Renderer> renderer_;
   std::unique_ptr<fplbase::AssetManager> asset_manager_;
 
+  bool multiplayer_;
+  const int player_number_;
+
   std::unique_ptr<Scene> scene_;
   std::unique_ptr<CarPhysics> car_physics_;
   std::unique_ptr<RoadDescriptor> road_descriptor_;
+  std::unique_ptr<CarPhysics> opponent_car_physics_;
 
   gvr::AudioSourceId engine_sound_[2];
   gvr::AudioSourceId gravel_sound_;
