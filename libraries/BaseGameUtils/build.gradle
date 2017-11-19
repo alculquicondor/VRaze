@@ -43,7 +43,7 @@ android {
     }
 
     compileSdkVersion android_compile_version
-    buildToolsVersion "25.0.2"
+    buildToolsVersion '26.0.2'
 
     defaultConfig {
         minSdkVersion android_min_sdk_version
