@@ -66,6 +66,6 @@ NATIVE_METHOD(void, nativeOnDestroy)
 
 NATIVE_METHOD_RT(void, nativeMoveCar)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y){
-
+LOGD("c++:   %f %f %f %f",x,y,dir_x,dir_y);
 }
 

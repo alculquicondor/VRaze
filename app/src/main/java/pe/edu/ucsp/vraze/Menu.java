@@ -1,6 +1,7 @@
 package pe.edu.ucsp.vraze;
 
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -25,7 +26,9 @@ import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
 import com.google.android.gms.games.multiplayer.realtime.RoomStatusUpdateListener;
 import com.google.android.gms.games.multiplayer.realtime.RoomUpdateListener;
 import com.google.example.games.basegameutils.BaseGameUtils;
+import com.google.vr.ndk.base.DaydreamApi;
 
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -47,8 +50,6 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   static boolean mMultiplayer = false;
   // My participant ID in the currently active game
   public static String mMyId = null;
-  // Message buffer for sending messages
-  static byte[] mMsgBuf = new byte[4];
 
   // The participants in the currently active game
   public static ArrayList<Participant> mParticipants = null;
@@ -64,7 +65,6 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   static String mRoomId = null;
 
   // Request codes for the UIs that we show with startActivityForResult:
-  final static int RC_SELECT_PLAYERS = 10000;
   final static int RC_WAITING_ROOM = 10002;
   // Request code used to invoke sign in user interactions.
   private static final int RC_SIGN_IN = 9001;
@@ -78,11 +78,14 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   public static GoogleApiClient mGoogleApiClient;
   final static String TAG = "VRAZE";
 
+  private DaydreamApi mDaydreamApi;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
+
+    mDaydreamApi = DaydreamApi.create(getApplicationContext());
 
     btn_google_sign_in = (com.google.android.gms.common.SignInButton) findViewById(pe.edu.ucsp.vraze.R.id.button_sign_in);
     btn_quick_game = (Button) findViewById(R.id.button_quick_game);
@@ -106,10 +109,7 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
       public void onClick(View v) {
 
         Log.d(TAG, "click btn_single_player");
-
-        Intent Vraze = new Intent(getApplicationContext(), MainActivity.class);
-        Vraze.putExtra("mParticipants", mParticipants);
-        startActivity(Vraze);
+        startGame(false);
       }
     });
     btn_google_sign_in.setOnClickListener(this);
@@ -180,14 +180,20 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
     mMultiplayer = multiplayer;
 
 
-    Intent intent = new Intent(this, MainActivity.class);
-    startActivity(intent);
+    //Intent intent = new Intent(this, MainActivity.class);
+
+    Intent intent = DaydreamApi.createVrIntent(new ComponentName(this, MainActivity.class));
+    //intent.putExtra("isMultiplayer",multiplayer);
+    //startActivity(intent);
+    if (mDaydreamApi == null) Log.d(TAG, "error en mdaydreamapi");
+    if (intent == null) System.err.println("error en inicializar intent ");
+    mDaydreamApi.launchInVr(intent);
+    mDaydreamApi.close();
   }
 
   // Leave the room.
   void leaveRoom() {
     Log.d(TAG, "Leaving room.");
-    //mSecondsLeft = 0;
     stopKeepingScreenOn();
     if (mRoomId != null) {
       Games.RealTimeMultiplayer.leave(mGoogleApiClient, this, mRoomId);
@@ -201,7 +207,7 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
     Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
         MAX_OPPONENTS, 0);
     RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
-    rtmConfigBuilder.setMessageReceivedListener(MainActivity.mMessageReceivedListener);
+    rtmConfigBuilder.setMessageReceivedListener(RealTime.getInstane());
     rtmConfigBuilder.setRoomStatusUpdateListener(this);
     rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
     keepScreenOn();
@@ -426,19 +432,20 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
 //nada
   }
 
-  // Called when we get an invitation to play a game. We react by showing that to the user.
 
+  public static byte[] float2ByteArray(float[] values) {
+    ByteBuffer buffer = ByteBuffer.allocate(4 * values.length);
+
+    for (float value : values)
+      buffer.putFloat(value);
+    return buffer.array();
+  }
 
   // Broadcast my score to everybody else.
-  public static void SendToPlayers(float x, float y, float dir0, float dir1, boolean is_finish) {
+  public static void SendToPlayers(float[] data, boolean is_finish) {
     if (!mMultiplayer)
       return; // playing single-player mode
 
-    mMsgBuf[0] = (byte) x;
-    mMsgBuf[1] = (byte) y;
-    mMsgBuf[2] = (byte) dir0;
-    mMsgBuf[3] = (byte) dir1;
-    Log.d(TAG, "envio: " + mMsgBuf);
     // Send to every other participant.
     for (Participant p : mParticipants) {
       if (p.getParticipantId().equals(mMyId))
@@ -447,11 +454,11 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
         continue;
       if (is_finish) {
         // final score notification must be sent via reliable message
-        Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, mMsgBuf,
+        Games.RealTimeMultiplayer.sendReliableMessage(mGoogleApiClient, null, float2ByteArray(data),
             mRoomId, p.getParticipantId());
       } else {
         // it's an interim score notification, so we can use unreliable
-        Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, mMsgBuf, mRoomId,
+        Games.RealTimeMultiplayer.sendUnreliableMessage(mGoogleApiClient, float2ByteArray(data), mRoomId,
             p.getParticipantId());
       }
     }

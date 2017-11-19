@@ -46,7 +46,7 @@ NATIVE_METHOD(void, nativeOnDrawFrame)
 NATIVE_METHOD(void, nativeOnDestroy)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
 
-NATIVE_METHOD(void, nativeMoveCar)
+NATIVE_METHOD_RT(void, nativeMoveCar)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y);
 
 }

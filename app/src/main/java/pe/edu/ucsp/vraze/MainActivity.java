@@ -24,11 +24,13 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.TextView;
 
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessage;
-import com.google.android.gms.games.multiplayer.realtime.RealTimeMessageReceivedListener;
 import com.google.vr.ndk.base.AndroidCompat;
 import com.google.vr.ndk.base.GvrLayout;
+
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -36,7 +38,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class MainActivity extends Activity {
 
   private static final String TAG = "MainActivity";
-
+  private boolean isMultiplayer;
   static {
     System.loadLibrary("vraze_jni");
   }
@@ -62,16 +64,17 @@ public class MainActivity extends Activity {
         }
       };
 
-  public static void messageMe(float x, float y, float dir0, float dir1) {
-    Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
-    Log.d(TAG,"d0: " + String.valueOf(dir0) + " d1: " + String.valueOf(dir1));
-    Menu.SendToPlayers(x,y,dir0,dir1,false);
+  public static void messageMe(float x, float y, float dir_x, float dir_y) {
+    //Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
+    //Log.d(TAG,"d0: " + String.valueOf(dir_x) + " d1: " + String.valueOf(dir_y));
+
+    float [] data = {x,y,dir_x,dir_y};
+    Menu.SendToPlayers(data,false);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setImmersiveSticky();
     getWindow()
         .getDecorView()
@@ -109,8 +112,10 @@ public class MainActivity extends Activity {
 
     nativeVRaze =
         nativeOnCreate(assetManager, gvrLayout.getGvrApi().getNativeGvrContext());
-
+    RealTime.getInstane().setNativeVRaze(nativeVRaze);
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
   }
 
   @Override
@@ -203,21 +208,6 @@ public class MainActivity extends Activity {
 
   private native void nativeOnDrawFrame(long controllerPaintJptr);
 
-  private native void nativeMoveCar(long controllerPaintJptr,float x,float y,float dir0, float dir1);
 
-  /**
-   * RealTimeMessageReceivedListener implementation for the messages
-   */
-  public static RealTimeMessageReceivedListener mMessageReceivedListener = new RealTimeMessageReceivedListener() {
-    @Override
-    public void onRealTimeMessageReceived(RealTimeMessage rtm) {
-      byte[] buf = rtm.getMessageData();
-      String sender = rtm.getSenderParticipantId();
-      Log.d(TAG, "x" + String.valueOf(buf[0]));
-      Log.d(TAG, "y" + String.valueOf(buf[1]));
-      Log.d(TAG, "dir: " + (float) buf[2] + "/" + (float) buf[3]);
-
-    }
-  };
 
 }
