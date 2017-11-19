@@ -32,10 +32,12 @@ class Scene {
   void Render(fplbase::Renderer* renderer,
               const mathfu::mat4& view_projection_matrix,
               const CarPhysics& car_physics,
+              const CarPhysics& oponent_car_physics,
               float steering);
 
  private:
   Car car_;
+  Car opponent_car_;
   Ground ground_;
   Steering steering_;
 

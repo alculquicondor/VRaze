@@ -29,8 +29,8 @@ Car::Car(fplbase::AssetManager *asset_manager) :
 }
 
 void Car::Render(fplbase::Renderer *renderer, const mathfu::mat4 &model_view_projection_matrix) {
-  shader_->SetUniform("ambient_material", mathfu::vec4{0.2f, 0.2f, 0.2f, 1.0f});
-  shader_->SetUniform("diffuse_material", mathfu::vec4{0.8f, 0.8f, 0.8f, 1.0f});
+  shader_->SetUniform("ambient_material", mathfu::vec4{0.7f, 0.7f, 0.7f, 1.0f});
+  shader_->SetUniform("diffuse_material", mathfu::vec4{0.4f, 0.4f, 0.4f, 1.0f});
   renderer->set_model_view_projection(model_view_projection_matrix * kModelMatrix);
   renderer->SetShader(shader_);
   renderer->Render(mesh_, true);

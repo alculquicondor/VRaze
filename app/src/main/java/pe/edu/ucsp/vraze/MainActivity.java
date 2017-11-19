@@ -17,6 +17,7 @@
 package pe.edu.ucsp.vraze;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -24,13 +25,11 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.TextView;
+
 
 import com.google.vr.ndk.base.AndroidCompat;
 import com.google.vr.ndk.base.GvrLayout;
 
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -69,6 +68,7 @@ public class MainActivity extends Activity {
     //Log.d(TAG,"d0: " + String.valueOf(dir_x) + " d1: " + String.valueOf(dir_y));
 
     float [] data = {x,y,dir_x,dir_y};
+    if(Menu.mMultiplayer)
     Menu.SendToPlayers(data,false);
   }
 
@@ -111,8 +111,11 @@ public class MainActivity extends Activity {
     AssetManager assetManager = getResources().getAssets();
 
     nativeVRaze =
-        nativeOnCreate(assetManager, gvrLayout.getGvrApi().getNativeGvrContext());
-    RealTime.getInstane().setNativeVRaze(nativeVRaze);
+
+        nativeOnCreate(getClass().getClassLoader(), getApplicationContext(), assetManager,
+            gvrLayout.getGvrApi().getNativeGvrContext());
+
+
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
 
@@ -194,7 +197,8 @@ public class MainActivity extends Activity {
         }
       };
 
-  private native long nativeOnCreate(AssetManager assetManager, long gvrContextPtr);
+  private native long nativeOnCreate(ClassLoader appClassLoader, Context context,
+      AssetManager assetManager, long gvrContextPtr);
 
   private native void nativeOnDestroy(long controllerPaintJptr);
 

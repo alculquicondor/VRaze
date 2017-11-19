@@ -49,6 +49,7 @@ CarPhysics::CarPhysics(const mathfu::vec2 position, RoadDescriptor* road_descrip
 void CarPhysics::Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle) {
   position_ += direction_ * speed_ * delta_time;
 
+  UpdateOnRoad();
   UpdateDirection(delta_time, steering_wheel_angle);
   UpdateSpeed(delta_time, accelerating, braking);
 }
@@ -79,9 +80,4 @@ void CarPhysics::UpdateSpeed(float delta_time, bool accelerating, bool braking) 
     force -= BRAKING;
   }
   speed_ += force / WEIGHT * delta_time;
-}
-
-
-float CarPhysics::GetFriction() const {
-  return road_descriptor_->IsInside(position_) ? ROAD_FRICTION : GROUND_FRICTION;
 }
