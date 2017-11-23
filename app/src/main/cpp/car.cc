@@ -18,7 +18,7 @@
 
 namespace {
 
-const mathfu::mat4 kModelMatrix = mathfu::mat4::FromTranslationVector({0.0f, -0.82f, 0.0f}) *
+const mathfu::mat4 kModelMatrix = mathfu::mat4::FromTranslationVector({0.0f, -0.85f, 0.0f}) *
     mathfu::mat4::FromScaleVector({0.07f, 0.07f, 0.07f});
 
 const mathfu::vec4 kAmbientMaterial = {0.7f, 0.7f, 0.7f, 1.0f};

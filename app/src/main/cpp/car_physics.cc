@@ -27,6 +27,8 @@ inline mathfu::Matrix<float, 2> Rotation2D(float angle) {
 
 constexpr float kSteeringSpeedCompensationRatio = 0.12f;
 
+constexpr float kCarRadius = 1.25f;
+
 }  // namespace
 
 constexpr float CarPhysics::WEIGHT = 1500.0f;
@@ -47,7 +49,12 @@ CarPhysics::CarPhysics(const mathfu::vec2 position, RoadDescriptor* road_descrip
 
 
 void CarPhysics::Move(float delta_time, bool accelerating, bool braking, float steering_wheel_angle) {
-  position_ += direction_ * speed_ * delta_time;
+  mathfu::vec2 next_position = position_ + direction_ * speed_ * delta_time;
+  if (opponent_ == nullptr or (next_position - opponent_->GetPosition()).LengthSquared() > kCarRadius) {
+    position_ = next_position;
+  } else {
+    accelerating = false;
+  }
 
   UpdateOnRoad();
   UpdateDirection(delta_time, steering_wheel_angle);

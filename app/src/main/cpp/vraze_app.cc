@@ -209,6 +209,8 @@ void VRazeApp::OnSurfaceCreated() {
                                               road_descriptor_.get());
   opponent_car_physics_ = std::make_unique<CarPhysics>(kStartingPositions[1 - player_number_],
                                                        road_descriptor_.get());
+  car_physics_->SetOpponent(opponent_car_physics_.get());
+  opponent_car_physics_->SetOpponent(car_physics_.get());
 
   LOGD("Init complete.");
 }

@@ -51,6 +51,10 @@ class CarPhysics {
     return on_road_;
   }
 
+  inline void SetOpponent(CarPhysics *opponent) {
+    opponent_ = opponent;
+  }
+
  private:
   mathfu::vec2 position_;
   RoadDescriptor* road_descriptor_;
@@ -58,6 +62,7 @@ class CarPhysics {
   float speed_ = 0.0f;
   float traction_;
   bool on_road_;
+  CarPhysics *opponent_ = nullptr;
 
   inline void UpdateOnRoad() {
     on_road_ = road_descriptor_->IsInside(position_);
