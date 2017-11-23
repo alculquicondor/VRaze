@@ -78,14 +78,10 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   public static GoogleApiClient mGoogleApiClient;
   final static String TAG = "VRAZE";
 
-  private DaydreamApi mDaydreamApi;
-
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_menu);
-
-    mDaydreamApi = DaydreamApi.create(getApplicationContext());
 
     btn_google_sign_in = (com.google.android.gms.common.SignInButton) findViewById(pe.edu.ucsp.vraze.R.id.button_sign_in);
     btn_quick_game = (Button) findViewById(R.id.button_quick_game);
@@ -178,17 +174,21 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   // Start the gameplay phase of the game.
   void startGame(boolean multiplayer) {
     mMultiplayer = multiplayer;
+    Intent intent;
+    DaydreamApi daydreamApi = DaydreamApi.create(getApplicationContext());
 
-
-    //Intent intent = new Intent(this, MainActivity.class);
-
-    Intent intent = DaydreamApi.createVrIntent(new ComponentName(this, MainActivity.class));
-    //intent.putExtra("isMultiplayer",multiplayer);
-    //startActivity(intent);
-    if (mDaydreamApi == null) Log.d(TAG, "error en mdaydreamapi");
-    if (intent == null) System.err.println("error en inicializar intent ");
-    mDaydreamApi.launchInVr(intent);
-    mDaydreamApi.close();
+    if (daydreamApi != null) {
+      intent = DaydreamApi.createVrIntent(new ComponentName(this, MainActivity.class));
+    } else {
+      intent = new Intent(this, MainActivity.class);
+    }
+    intent.putExtra("isMultiplayer", multiplayer);
+    if (daydreamApi != null) {
+      daydreamApi.launchInVr(intent);
+      daydreamApi.close();
+    } else {
+      startActivity(intent);
+    }
   }
 
   // Leave the room.
