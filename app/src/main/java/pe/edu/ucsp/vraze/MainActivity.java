@@ -26,8 +26,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.WindowManager;
 
+
 import com.google.vr.ndk.base.AndroidCompat;
 import com.google.vr.ndk.base.GvrLayout;
+
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -35,7 +37,7 @@ import javax.microedition.khronos.opengles.GL10;
 public class MainActivity extends Activity {
 
   private static final String TAG = "MainActivity";
-
+  private boolean isMultiplayer;
   static {
     System.loadLibrary("vraze_jni");
   }
@@ -61,15 +63,18 @@ public class MainActivity extends Activity {
         }
       };
 
-  public static void messageMe(float x, float y, float dir0, float dir1) {
-    Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
-    Log.d(TAG,"d0: " + String.valueOf(dir0) + " d1: " + String.valueOf(dir1));
+  public static void messageMe(float x, float y, float dir_x, float dir_y) {
+    //Log.d(TAG,"x: " + String.valueOf(x) + " y: " + String.valueOf(y));
+    //Log.d(TAG,"d0: " + String.valueOf(dir_x) + " d1: " + String.valueOf(dir_y));
+
+    float [] data = {x,y,dir_x,dir_y};
+    if(Menu.mMultiplayer)
+    Menu.SendToPlayers(data,false);
   }
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
     setImmersiveSticky();
     getWindow()
         .getDecorView()
@@ -106,10 +111,14 @@ public class MainActivity extends Activity {
     AssetManager assetManager = getResources().getAssets();
 
     nativeVRaze =
+
         nativeOnCreate(getClass().getClassLoader(), getApplicationContext(), assetManager,
             gvrLayout.getGvrApi().getNativeGvrContext());
 
+
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+
+
   }
 
   @Override
@@ -202,4 +211,7 @@ public class MainActivity extends Activity {
   private native void nativeOnSurfaceChanged(int width, int height, long controllerPaintJptr);
 
   private native void nativeOnDrawFrame(long controllerPaintJptr);
+
+
+
 }

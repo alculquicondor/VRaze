@@ -47,6 +47,16 @@ dependencies {
     compile 'com.google.vr:sdk-audio:1.80.0'
     compile 'com.google.vr:sdk-base:1.80.0'
     testCompile 'junit:junit:4.12'
+
+    //support googleplay
+
+    if (!project.hasProperty('support_library_version')) {
+        ext.support_library_version = '20.0.+'
+    }
+
+    compile "com.android.support:support-v4:${support_library_version}"
+    compile project(':libraries:BaseGameUtils')
+
 }
 
 preBuild.dependsOn extractAudioSo

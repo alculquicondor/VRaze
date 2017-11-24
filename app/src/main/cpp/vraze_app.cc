@@ -92,6 +92,8 @@ VRazeApp::VRazeApp(JNIEnv *env, jobject asset_manager, jlong gvr_context_ptr,
       env_(env),
       multiplayer_(multiplayer),
       player_number_(player_number) {
+  LOGD("Initializing VRazeApp.");
+
   fplbase::SetAAssetManager(AAssetManager_fromJava(env, asset_manager));
 
   for (int i = 0; i < 2; ++i) {
@@ -173,6 +175,7 @@ void VRazeApp::OnSurfaceCreated() {
   gvr_controller_api_ = std::make_unique<gvr::ControllerApi>();
   CHECK(gvr_controller_api_);
   if (gvr_controller_api_->Init(gvr::ControllerApi::DefaultOptions(), gvr_context_)) {
+    gvr_controller_api_->Resume();
     LOGI("Controller support available.");
   } else {
     LOGI("No controller support available.");
