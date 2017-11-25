@@ -38,14 +38,10 @@ public class RealTime implements RealTimeMessageReceivedListener {
   @Override
   public void onRealTimeMessageReceived(RealTimeMessage rtm) {
     byte[] buf = rtm.getMessageData();
-    String sender = rtm.getSenderParticipantId();
     FloatBuffer fb = ByteBuffer.wrap(buf).asFloatBuffer();
     float[] data = new float[fb.capacity()];
     fb.get(data);
 
-    Log.d(TAG, "x: " + data[0]);
-    Log.d(TAG, "y: " + data[1]);
-    Log.d(TAG, "dir: " + data[2] + " - " + data[3]);
     if (nativeVRaze != 0)
       nativeMoveCar(nativeVRaze, data[0], data[1], data[2], data[3]);
   }

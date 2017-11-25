@@ -38,7 +38,6 @@ import javax.microedition.khronos.opengles.GL10;
 public class MainActivity extends Activity {
 
   private static final String TAG = "MainActivity";
-  private boolean isMultiplayer;
   static {
     System.loadLibrary("vraze_jni");
   }
@@ -117,7 +116,7 @@ public class MainActivity extends Activity {
 
     nativeVRaze =
         nativeOnCreate(getClass().getClassLoader(), getApplicationContext(), assetManager,
-            gvrLayout.getGvrApi().getNativeGvrContext(), isMultiplayer, playerNumber);
+            gvrLayout.getGvrApi().getNativeGvrContext(), multiplayer, playerNumber);
 
     RealTime.getInstance().setNativeVRaze(nativeVRaze);
 
