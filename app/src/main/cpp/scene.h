@@ -28,7 +28,7 @@
 
 class Scene {
  public:
-  explicit Scene(fplbase::AssetManager* asset_manager);
+  explicit Scene(fplbase::AssetManager* asset_manager, int player_number);
   void Render(fplbase::Renderer* renderer,
               const mathfu::mat4& view_projection_matrix,
               const CarPhysics& car_physics,

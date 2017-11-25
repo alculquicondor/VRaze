@@ -18,6 +18,7 @@ package pe.edu.ucsp.vraze;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
@@ -89,6 +90,10 @@ public class MainActivity extends Activity {
             });
     AndroidCompat.setVrModeEnabled(this, true);
 
+    Intent intent = getIntent();
+    boolean multiplayer = intent.getBooleanExtra("isMultiplayer", false);
+    int playerNumber = intent.getIntExtra("playerNumber", 0);
+
     gvrLayout = new GvrLayout(this);
     if (gvrLayout.setAsyncReprojectionEnabled(true)) {
       Log.d(TAG, "Successfully enabled async reprojection.");
@@ -99,7 +104,7 @@ public class MainActivity extends Activity {
 
     surfaceView = new GLSurfaceView(this);
     surfaceView.setEGLContextClientVersion(3);
-    surfaceView.setEGLConfigChooser(8, 8, 8, 0, 0, 0);
+    surfaceView.setEGLConfigChooser(8, 8, 8, 8, 16, 0);
     surfaceView.setRenderer(renderer);
 
     surfaceView.setPreserveEGLContextOnPause(true);
@@ -111,10 +116,10 @@ public class MainActivity extends Activity {
     AssetManager assetManager = getResources().getAssets();
 
     nativeVRaze =
-
         nativeOnCreate(getClass().getClassLoader(), getApplicationContext(), assetManager,
-            gvrLayout.getGvrApi().getNativeGvrContext());
+            gvrLayout.getGvrApi().getNativeGvrContext(), isMultiplayer, playerNumber);
 
+    RealTime.getInstance().setNativeVRaze(nativeVRaze);
 
     getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -198,7 +203,7 @@ public class MainActivity extends Activity {
       };
 
   private native long nativeOnCreate(ClassLoader appClassLoader, Context context,
-      AssetManager assetManager, long gvrContextPtr);
+      AssetManager assetManager, long gvrContextPtr, boolean isMultiplayer, int playerNumber);
 
   private native void nativeOnDestroy(long controllerPaintJptr);
 

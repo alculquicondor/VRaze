@@ -37,9 +37,10 @@ class VRazeApp {
   void OnSurfaceCreated();
   void OnSurfaceChanged(int width, int height);
   void OnDrawFrame();
+  void OnMoveOpponent(float x, float y, float dir_x, float dir_y);
 
  private:
-  void SendMessage(float x, float y, float dir0, float dir1);
+  void SendMessage(float x, float y, float dir_x, float dir_y);
   void PrepareFramebuffer();
   void GetInput();
   void DrawEye(gvr::Eye which_eye, const mathfu::mat4 &eye_view_matrix,

@@ -206,7 +206,7 @@ void VRazeApp::OnSurfaceCreated() {
   renderer_->SetRenderState(render_state);
   asset_manager_ = std::make_unique<fplbase::AssetManager>(*renderer_);
 
-  scene_ = std::make_unique<Scene>(asset_manager_.get());
+  scene_ = std::make_unique<Scene>(asset_manager_.get(), player_number_);
   road_descriptor_ = std::make_unique<RoadDescriptor>(asset_manager_.get());
   car_physics_ = std::make_unique<CarPhysics>(kStartingPositions[player_number_],
                                               road_descriptor_.get());
@@ -343,7 +343,16 @@ void VRazeApp::SetUpViewPortAndScissor(const gvr::Sizei &framebuf_size,
   // renderer_->ScissorOn({left, bottom}, {width, height});
 }
 
-void VRazeApp::SendMessage(float x,float y, float dir0,float dir1){
+
+void VRazeApp::SendMessage(float x, float y, float dir_x, float dir_y) {
   vm_->AttachCurrentThread(&env_, 0);
-  env_->CallStaticVoidMethod(clazz, javaMethod,x,y,dir0,dir1);
+  env_->CallStaticVoidMethod(clazz, javaMethod,x,y,dir_x,dir_y);
+}
+
+
+void VRazeApp::OnMoveOpponent(float x, float y, float dir_x, float dir_y) {
+  if (opponent_car_physics_ != nullptr) {
+    opponent_car_physics_->SetPosition(mathfu::vec2(x, y));
+    opponent_car_physics_->SetDirection(mathfu::vec2(dir_x, dir_y));
+  }
 }

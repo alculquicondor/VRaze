@@ -28,10 +28,11 @@ inline VRazeApp *ptr(jlong jptr) { return reinterpret_cast<VRazeApp *>(jptr); }
 
 NATIVE_METHOD(jlong, nativeOnCreate)
 (JNIEnv *env, jobject obj, jobject class_loader, jobject android_context, jobject asset_mgr,
- jlong gvr_context_ptr) {
+ jlong gvr_context_ptr, jboolean is_multiplayer, jint playerNumber) {
   auto audio_api = std::make_unique<gvr::AudioApi>();
   audio_api->Init(env, android_context, class_loader, GVR_AUDIO_RENDERING_BINAURAL_HIGH_QUALITY);
-  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr, std::move(audio_api), true, 0));
+  return jptr(new VRazeApp(env, asset_mgr, gvr_context_ptr, std::move(audio_api),
+                           is_multiplayer, playerNumber));
 }
 
 NATIVE_METHOD(void, nativeOnResume)
@@ -68,7 +69,7 @@ NATIVE_METHOD(void, nativeOnDestroy)
 
 
 NATIVE_METHOD_RT(void, nativeMoveCar)
-(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y){
-LOGD("c++:   %f %f %f %f",x,y,dir_x,dir_y);
+(JNIEnv* env, jobject obj, jlong controller_paint_jptr,float x, float y, float dir_x, float dir_y) {
+  ptr(controller_paint_jptr)->OnMoveOpponent(x, y, dir_x, dir_y);
 }
 

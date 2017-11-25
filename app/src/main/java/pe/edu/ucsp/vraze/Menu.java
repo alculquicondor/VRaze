@@ -10,16 +10,12 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.games.Games;
 import com.google.android.gms.games.GamesActivityResultCodes;
 import com.google.android.gms.games.GamesStatusCodes;
-import com.google.android.gms.games.multiplayer.Invitation;
-import com.google.android.gms.games.multiplayer.Multiplayer;
-import com.google.android.gms.games.multiplayer.OnInvitationReceivedListener;
 import com.google.android.gms.games.multiplayer.Participant;
 import com.google.android.gms.games.multiplayer.realtime.Room;
 import com.google.android.gms.games.multiplayer.realtime.RoomConfig;
@@ -30,11 +26,8 @@ import com.google.vr.ndk.base.DaydreamApi;
 
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by zafiron on 27/10/17.
@@ -49,7 +42,7 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
   // Are we playing in multiplayer mode?
   static boolean mMultiplayer = false;
   // My participant ID in the currently active game
-  public static String mMyId = null;
+  private static String mMyId = null;
 
   // The participants in the currently active game
   public static ArrayList<Participant> mParticipants = null;
@@ -182,7 +175,22 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
     } else {
       intent = new Intent(this, MainActivity.class);
     }
+    int playerNumber = 0;
+    if (mParticipants != null) {
+      String ids[] = new String[mParticipants.size()];
+      int i = 0;
+      for (Participant p : mParticipants) {
+        ids[i++] = p.getParticipantId();
+      }
+      Arrays.sort(ids);
+      for (i = 0; i < ids.length; ++i) {
+        if (ids[i].equals(mMyId))
+          break;
+        playerNumber++;
+      }
+    }
     intent.putExtra("isMultiplayer", multiplayer);
+    intent.putExtra("playerNumber", playerNumber);
     if (daydreamApi != null) {
       daydreamApi.launchInVr(intent);
       daydreamApi.close();
@@ -207,7 +215,7 @@ public class Menu extends Activity implements GoogleApiClient.ConnectionCallback
     Bundle autoMatchCriteria = RoomConfig.createAutoMatchCriteria(MIN_OPPONENTS,
         MAX_OPPONENTS, 0);
     RoomConfig.Builder rtmConfigBuilder = RoomConfig.builder(this);
-    rtmConfigBuilder.setMessageReceivedListener(RealTime.getInstane());
+    rtmConfigBuilder.setMessageReceivedListener(RealTime.getInstance());
     rtmConfigBuilder.setRoomStatusUpdateListener(this);
     rtmConfigBuilder.setAutoMatchCriteria(autoMatchCriteria);
     keepScreenOn();

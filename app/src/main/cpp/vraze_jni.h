@@ -32,7 +32,7 @@ extern "C" {
 
 NATIVE_METHOD(jlong, nativeOnCreate)
 (JNIEnv* env, jobject obj, jobject class_loader, jobject android_context, jobject asset_mgr,
- jlong gvrContextPtr);
+ jlong gvrContextPtr, jboolean is_multiplayer, jint player_number);
 NATIVE_METHOD(void, nativeOnResume)
 (JNIEnv* env, jobject obj, jlong controller_paint_jptr);
 NATIVE_METHOD(void, nativeOnPause)

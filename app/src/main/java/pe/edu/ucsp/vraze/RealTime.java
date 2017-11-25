@@ -21,7 +21,7 @@ public class RealTime implements RealTimeMessageReceivedListener {
   private RealTime() {
   }
 
-  public static RealTime getInstane() {
+  public static RealTime getInstance() {
     return instance;
   }
 
